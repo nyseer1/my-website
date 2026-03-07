@@ -20,7 +20,7 @@ export default function HomePage() {
 				<Grid>
 					<GridCol span={{ base: 1, md: 5, lg: 5 }} />
 					<GridCol span={{ base: 12, md: 2, lg: 2 }}>
-						<Image
+						{/* <Image
 							component={NextImage}
 							radius="lg"
 							h={200}
@@ -28,7 +28,7 @@ export default function HomePage() {
 							fit="contain"
 							src={myPhoto}
 							alt="My image"
-						/>
+						/> */}
 
 						<br />
 						<br />
