@@ -1,6 +1,53 @@
-/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
-// import Link from 'next/link';
-// import { ColorSchemeToggle } from '../components/ColorSchemeToggle/ColorSchemeToggle';
+"use client"; // Required for Web Audio API (ensures the code only runs in the browser where the window object and AudioContext are available)
+/*
+Web Audio API code must exclusively be in Client Components because the AudioContext 
+and other web audio features are browser-only APIs, do not exist on server
+
+2. Strategic Placement
+For a clean architecture, organize your code into these three areas:
+
+    Custom Hooks (/hooks/useSynth.ts): Store the core audio logic here.
+        Initialize the AudioContext and Oscillator inside a useEffect or a useRef to keep the same audio instance across re-renders.
+        Expose functions like playNote() or stopNote() to your UI.
+    UI Components (/components/Keyboard.tsx): Create the visual buttons and sliders.
+        Use event listeners (like onClick) to trigger the functions from your hook.
+    Utility Functions (/lib/audioUtils.ts): Put pure math or frequency tables (like mapping "C4" to 261.63Hz) here to keep your components light.
+	Browsers block audio from starting automatically to prevent annoying ads.
+
+    Do not initialize your AudioContext globally at the top level of a file.
+    Do resume or create the AudioContext inside an event handler triggered by the user (like a "Start Synth" button)
+
+ -----	example: using native web audio api -------------------------------------------------------------
+
+	"use client"; // Required for Web Audio AP
+import { useRef } from "react";
+
+export default function Synthesizer() {
+  const audioCtx = useRef(null);
+
+  const startSynth = () => {
+    // Initialize only after user interaction
+    if (!audioCtx.current) {
+      audioCtx.current = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    
+    const osc = audioCtx.current.createOscillator();
+    osc.connect(audioCtx.current.destination);
+    osc.start();
+    osc.stop(audioCtx.current.currentTime + 0.5); // Play for 0.5s
+  };
+
+  return <button onClick={startSynth}>Play Sound</button>;
+}
+  -------------------------------------------------------------------
+  can also use tone.js for more complex stuff,
+  Event Listeners: Map computer keyboard keys (e.g., 'A', 'S', 'D') or mouse clicks to specific musical notes
+  -----------------------------------------------------
+
+  
+
+
+*/
 
 import { Box, Button, Grid, GridCol, Group, Typography } from "@mantine/core";
 import { IconExternalLink } from "@tabler/icons-react";
