@@ -1,21 +1,29 @@
-"use client"; // This is a client component 👈🏽
-// import { useState } from 'react';
+"use client"; // This is a client component, renders in client. 
 import { Burger, Button,  Container, Group, MantineProvider, createTheme, Title, Menu, AppShell} from '@mantine/core';
 import { useDisclosure, useHeadroom} from '@mantine/hooks';
-// import { MantineLogo } from '@mantinex/mantine-logo';
 import classes from './HeaderSimple.module.css';
 // import Link from 'next/link';
+
+import { usePathname } from 'next/navigation'; //hook to store the pathnames of different pages
 
 import {
   IconPhoto,
   IconArrowsLeftRight,
 } from '@tabler/icons-react';
-const links = [
+const linkshome = [
   { link: '/', label: 'Home' },
   { link: '#about-section', label: 'About Me' },
   { link: '#project-section', label: 'Projects' },
   { link: '#skills-section', label: 'Skills' },
   { link: '#contact-section', label: 'Hire Me' },
+];
+
+const links = [
+  { link: '/', label: 'Home' },
+  { link: '/#about-section', label: 'About Me' },
+  { link: '/#project-section', label: 'Projects' },
+  { link: '/#skills-section', label: 'Skills' },
+  { link: '/#contact-section', label: 'Hire Me' },
 ];
 
 const theme = createTheme({
@@ -28,12 +36,25 @@ const theme = createTheme({
 
 export function HeaderSimple() {
 
+  const pathname = usePathname(); //hook to store pathname of pages
+
   // this initializes the headroom for navbar
   const pinned = useHeadroom({ fixedAt: 100 }); 
 
   const [opened, { toggle }] = useDisclosure(false);
 
   const items = links.map((link) => (
+    <a
+      key={link.label}
+      href={link.link}
+      className={classes.link}
+      
+    >
+      {link.label}
+    </a>
+  ));
+
+  const itemshome = linkshome.map((link) => (
     <a
       key={link.label}
       href={link.link}
@@ -63,8 +84,16 @@ export function HeaderSimple() {
                   </MantineProvider>
                 </Group>
                 
+
+                {/* navbar items/buttons (not including logo) */}
                 <Group gap={5} visibleFrom="lg" justify="flex-end">
-                  {items}
+
+                {/* if home, put jump/anchor link. else add home directory to links */}
+                  {pathname === '/' ? (
+                    <>{itemshome}</>
+                  ) : (
+                    <>{items}</>
+                  )}
                 </Group>
 
 

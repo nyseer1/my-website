@@ -5,6 +5,9 @@ import { createTheme, MantineProvider } from "@mantine/core";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
+import { HeaderSimple } from "@/components/HeaderSimple";
+import Head from "next/head";
+
 const geistSans = Geist({
 	variable: "--font-geist-sans",
 	subsets: ["latin"],
@@ -32,6 +35,7 @@ export default function RootLayout({
 			>
 				<MantineProvider>
 					{/* Your app here */}
+					<HeaderSimple />
 					{children}
 				</MantineProvider>
 			</body>

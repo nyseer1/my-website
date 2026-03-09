@@ -1,5 +1,15 @@
 "use client"; // Required for Web Audio API (ensures the code only runs in the browser where the window object and AudioContext are available)
 /*
+
+might start writing notes explicitly in txt files or comments of my own code.
+I can simply transfer the txt files between my devices. Way better than google accessing all
+my data and needing to login to google just to see my notes
+
+web synth tutorial here:
+https://youtu.be/uasGsHf7UYA?si=z87uj7leOwClBlRR
+LOCAL PATH(DELETE LATER)
+"C:\Users\nysee\Downloads\videoplayback.mp4"
+
 Web Audio API code must exclusively be in Client Components because the AudioContext 
 and other web audio features are browser-only APIs, do not exist on server
 
@@ -18,7 +28,7 @@ For a clean architecture, organize your code into these three areas:
     Do resume or create the AudioContext inside an event handler triggered by the user (like a "Start Synth" button)
 
  -----	example: using native web audio api -------------------------------------------------------------
-
+put this in synthesizer.tsx
 	"use client"; // Required for Web Audio AP
 import { useRef } from "react";
 
@@ -126,67 +136,17 @@ Gain Ramping: Always ramp the volume to nearly zero before stopping an oscillato
 
 
 
-
-
 */
 
 import { Box, Button, Grid, GridCol, Group, Typography } from "@mantine/core";
 import { IconExternalLink } from "@tabler/icons-react";
 // import styles from '../styles/Home.module.css';
-import { HeaderSimple } from "@/components/HeaderSimple";
-// import { getUsers } from '@/components/testget';
-// import { db } from '../../components/db';
-// // SELECT
-// pool.query<RowDataPacket[]>('SELECT 1 + 1 AS `test`;', (_err, rows) => {
-//   console.log(rows);
-//   /**
-//    * @rows: [ { test: 2 } ]
-//    */
-// });
-
-// console.log("bruh")
-//
-import mysql from "mysql2/promise";
-
-// const connection = await mysql.createConnection({
-//     host: 'localhost',
-//     user: 'root',
-//     password: 'Darker124@@@',
-//     database: 'new_schema',
-//     // rowsAsArray: true,
-//   });
-
-//   // query database
-// const [rows, fields] = await connection.execute(
-//   'SELECT * FROM `denormalized_orders` LIMIT 1',
-// );
-// // console.warn('test the console');
-
-// // const data: string = JSON.stringify(rows[0].order_id);
-// // console.warn(data);//
-
-// //try this one
-// const temp: string = JSON.parse(JSON.stringify(rows));
-// // console.warn(rows[0]);
-// // console.warn("test order id's row: " + rows.order_id);
-// // const data = [];
-// // console.warn(data);
-
-// rows.forEach((user) => {
-//     console.log('-----------');
-//     console.log('id:  ', user.id);
-//     console.log('name:', user.name);
-//   });
-
-//   for (let i = 0; i < cars.length; i++) {
-//   text += cars[i] + "<br>";
-// }
 
 export default function HomePage() {
 	return (
 		<>
 			<div id="home-section" />
-			<HeaderSimple />
+			{/* <HeaderSimple /> */}
 
 			<Box px={{ base: "sm", md: "xl" }}>
 				{/* grouped by rows */}

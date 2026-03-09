@@ -5,7 +5,7 @@ import { IconExternalLink } from "@tabler/icons-react";
 //so image can work with imports and still use mantine styling:
 import NextImage from "next/image";
 // header that i reuse and the icons that it uses';
-import { HeaderSimple } from "@/components/HeaderSimpleHome";
+// import { HeaderSimple } from "@/components/HeaderSimpleHome";
 //to use local images in nextjs
 import myPhoto from "../public/nyseer.png";
 
@@ -13,7 +13,7 @@ export default function HomePage() {
 	return (
 		<>
 			<div id="home-section" />
-			<HeaderSimple />
+			{/* <HeaderSimple /> */}
 
 			<Box px={{ base: "sm", md: "xl" }}>
 				{/* grouped by rows */}
