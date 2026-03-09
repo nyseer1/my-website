@@ -43,8 +43,89 @@ export default function Synthesizer() {
   can also use tone.js for more complex stuff,
   Event Listeners: Map computer keyboard keys (e.g., 'A', 'S', 'D') or mouse clicks to specific musical notes
   -----------------------------------------------------
+  To manage multiple oscillators in a Next.js project without memory leaks, 
+  you should use a combination of useRef to store the active audio nodes 
+  and a useEffect cleanup function to disconnect them when the component unmounts. 
+  Why Use useRef? Unlike useState, updating a useRef does not trigger a re-render. 
+  This is perfect for high-frequency audio data that doesn't need to be reflected 
+  in the UI immediately.
 
-  
+  custom hook usepolysynth
+
+  "use client";
+import { useRef, useEffect, useCallback } from 'react';
+
+export function usePolySynth() {
+  // 1. Persist the AudioContext and an active oscillators map across renders
+  const audioCtx = useRef(null);
+  const activeOscillators = useRef({}); // Stores oscillators by note (e.g., "C4")
+
+  const playNote = useCallback((note, frequency) => {
+    // 2. Initialize context on first user interaction
+    if (!audioCtx.current) {
+      audioCtx.current = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.current.state === 'suspended') audioCtx.current.resume();
+
+    // Prevent duplicate oscillators for the same note
+    if (activeOscillators.current[note]) return;
+
+    // 3. Create and connect nodes
+    const osc = audioCtx.current.createOscillator();
+    const gain = audioCtx.current.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(frequency, audioCtx.current.currentTime);
+    
+    osc.connect(gain);
+    gain.connect(audioCtx.current.destination);
+
+    osc.start();
+    
+    // Store both to stop and disconnect them later
+    activeOscillators.current[note] = { osc, gain };
+  }, []);
+
+  const stopNote = useCallback((note) => {
+    const active = activeOscillators.current[note];
+    if (active) {
+      const { osc, gain } = active;
+      // Smooth release to prevent "clicking" sounds
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.current.currentTime + 0.1);
+      
+      osc.stop(audioCtx.current.currentTime + 0.1);
+      
+      // Cleanup node once sound finishes
+      osc.onended = () => {
+        osc.disconnect();
+        gain.disconnect();
+      };
+      
+      delete activeOscillators.current[note];
+    }
+  }, []);
+
+  // 4. Memory Leak Protection: Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      Object.values(activeOscillators.current).forEach(({ osc, gain }) => {
+        osc.stop();
+        osc.disconnect();
+        gain.disconnect();
+      });
+      if (audioCtx.current) audioCtx.current.close();
+    };
+  }, []);
+
+  return { playNote, stopNote };
+}
+notes about code
+The onended Callback: In the Web Audio API, an oscillator doesn't automatically disappear when it stops. You must manually call disconnect() after stop() to release it for garbage collection.
+The useEffect Return: This acts as a final fail-safe. If the user navigates to a different page in your Next.js app, this function kills all active sounds and closes the AudioContext entirely.
+Gain Ramping: Always ramp the volume to nearly zero before stopping an oscillator. Stopping a wave at its peak causes an audible "pop" or "click".
+
+
+
 
 
 */
