@@ -34,8 +34,9 @@ export default function RootLayout({
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
 				<MantineProvider>
-					{/* Your app here */}
-					<HeaderSimple />
+					{/* header that is rendered client side so it can use hooks */}
+					<HeaderSimple /> 
+					{/* this is where all the pages get rendered */}
 					{children}
 				</MantineProvider>
 			</body>
