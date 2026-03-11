@@ -1,0 +1,66 @@
+.piano-container {
+  padding: 20px;
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.piano-board {
+  display: flex;
+  position: relative; /* Essential for black key absolute positioning */
+  background-color: #333;
+  padding: 20px 20px 40px 20px;
+  border-radius: 10px;
+  user-select: none;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+/* Base style for all keys */
+.key {
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 10px;
+  transition: background-color 0.1s;
+  font-size: 12px;
+}
+
+.white-key {
+  width: 60px;
+  height: 200px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 0 0 5px 5px;
+  z-index: 1;
+  box-shadow: inset 0 -5px 0 #eee;
+  color: #333;
+}
+
+.white-key:active {
+  background-color: #e0e0e0;
+  box-shadow: inset 0 -2px 0 #ccc;
+}
+
+.black-key {
+  width: 40px;
+  height: 120px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 0 0 3px 3px;
+  /* The "Overlap" Logic */
+  margin-left: -20px;
+  margin-right: -20px;
+  z-index: 2;
+  box-shadow: inset 0 -5px 0 #222;
+}
+
+.black-key:active {
+  background-color: #444;
+}
+
+.key-label {
+  pointer-events: none; /* Ensure clicks hit the button, not the text */
+}

@@ -1,15 +1,10 @@
 "use client"; // Required for Web Audio API (ensures the code only runs in the browser where the window object and AudioContext are available)
 import { StartSynth } from "./StartSynth";
-
+import "./synth.css";
 /*
 might start writing notes explicitly in txt files or comments of my own code.
 I can simply transfer the txt files between my devices. Way better than google accessing all
 my data and needing to login to google just to see my notes
-
-web synth tutorial here:
-https://youtu.be/uasGsHf7UYA?si=z87uj7leOwClBlRR
-LOCAL PATH(DELETE LATER)
-"C:\Users\nysee\Downloads\videoplayback.mp4"
 
 Web Audio API code must exclusively be in Client Components because the AudioContext 
 and other web audio features are browser-only APIs, do not exist on server
@@ -23,37 +18,9 @@ For a clean architecture, organize your code into these three areas:
     UI Components (/components/Keyboard.tsx): Create the visual buttons and sliders.
         Use event listeners (like onClick) to trigger the functions from your hook.
     Utility Functions (/lib/audioUtils.ts): Put pure math or frequency tables (like mapping "C4" to 261.63Hz) here to keep your components light.
-	Browsers block audio from starting automatically to prevent annoying ads.
+  Browsers block audio from starting automatically to prevent annoying ads.
 
-    Do not initialize your AudioContext globally at the top level of a file.
-    Do resume or create the AudioContext inside an event handler triggered by the user (like a "Start Synth" button)
-
- -----	example: using native web audio api -------------------------------------------------------------
-put this in synthesizer.tsx
-	"use client"; // Required for Web Audio AP
-import { useRef } from "react";
-
-export default function Synthesizer() {
-  const audioCtx = useRef(null);
-
-  const startSynth = () => {
-    // Initialize only after user interaction
-    if (!audioCtx.current) {
-      audioCtx.current = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    
-    const osc = audioCtx.current.createOscillator();
-    osc.connect(audioCtx.current.destination);
-    osc.start();
-    osc.stop(audioCtx.current.currentTime + 0.5); // Play for 0.5s
-  };
-
-  return <button onClick={startSynth}>Play Sound</button>;
-}
-  -------------------------------------------------------------------
-  can also use tone.js for more complex stuff,
-  Event Listeners: Map computer keyboard keys (e.g., 'A', 'S', 'D') or mouse clicks to specific musical notes
-  -----------------------------------------------------
+--------------------------------------------------------------------------
   To manage multiple oscillators in a Next.js project without memory leaks, 
   you should use a combination of useRef to store the active audio nodes 
   and a useEffect cleanup function to disconnect them when the component unmounts. 
@@ -61,6 +28,7 @@ export default function Synthesizer() {
   This is perfect for high-frequency audio data that doesn't need to be reflected 
   in the UI immediately.
 
+ex:
   custom hook usepolysynth
 
   "use client";
@@ -135,53 +103,67 @@ The onended Callback: In the Web Audio API, an oscillator doesn't automatically 
 The useEffect Return: This acts as a final fail-safe. If the user navigates to a different page in your Next.js app, this function kills all active sounds and closes the AudioContext entirely.
 Gain Ramping: Always ramp the volume to nearly zero before stopping an oscillator. Stopping a wave at its peak causes an audible "pop" or "click".
 
+can use a useEffect return function to call synth.dispose(). This prevents memory leaks if the user navigates away from the piano page
 
 
 */
 
 import { Box, Button, Grid, GridCol, Group, Typography } from "@mantine/core";
 import { IconExternalLink } from "@tabler/icons-react";
-// import styles from '../styles/Home.module.css';
 
 export default function SynthPage() {
 
-	return (
-		<>
-			<div id="home-section" />
-			{/* <HeaderSimple /> */}
+  return (
+    <>
+      <div id="home-section" />
+      {/* <HeaderSimple /> */}
 
-			<Box px={{ base: "sm", md: "xl" }}>
-				{/* grouped by rows */}
-				<Grid>
-					<GridCol span={{ base: 1, md: 5, lg: 5 }} />
-					<GridCol span={{ base: 12, md: 2, lg: 2 }}>
-					<Group justify="center">	
-						<StartSynth />	
-					</Group>
-					</GridCol>
-					<GridCol span={{ base: 1, md: 5, lg: 5 }} />
+      <Box px={{ base: "sm", md: "xl" }}>
+        {/* grouped by rows */}
+        <Grid>
+          <GridCol span={{ base: 1, md: 5, lg: 5 }} />
+          <GridCol span={{ base: 12, md: 2, lg: 2 }}>
+            <Group justify="center">
+              <StartSynth />
+              {/* <div className="piano">
+                <div className="key white" data-note="C4"></div>
+                <div className="key black" data-note="C#4"></div>
+                <div className="key white" data-note="D4"></div>
+                <div className="key black" data-note="D#4"></div>
+                <div className="key white" data-note="E4"></div>
+                <div className="key white" data-note="F4"></div>
+                <div className="key black" data-note="F#4"></div>
+                <div className="key white" data-note="G4"></div>
+                <div className="key black" data-note="G#4"></div>
+                <div className="key white" data-note="A4"></div>
+                <div className="key black" data-note="A#4"></div>
+                <div className="key white" data-note="B4"></div>
+                <div className="key white" data-note="C5"></div>
+              </div> */}
+            </Group>
+          </GridCol>
+          <GridCol span={{ base: 1, md: 5, lg: 5 }} />
 
-					<GridCol span={{ base: 12, md: 12, lg: 12 }}>
-						<h4>
-							<i>Synth</i>
-						</h4>
-						<h1></h1>
-					</GridCol>
+          <GridCol span={{ base: 12, md: 12, lg: 12 }}>
+            <h4>
+              <i>Synth</i>
+            </h4>
+          </GridCol>
 
-					<GridCol span={{ base: 12, md: 4, lg: 4 }} />
-					<GridCol span={{ base: 12, md: 4, lg: 4 }}>
-						<h3>description</h3>
-						{/* <Typography>`${rows}`</Typography> */}
-					</GridCol>
-					<GridCol span={{ base: 12, md: 4, lg: 4 }} />
+          <GridCol span={{ base: 12, md: 4, lg: 4 }} />
+          <GridCol span={{ base: 12, md: 4, lg: 4 }}>
+            <h3>description</h3>
+            {/* <Typography>`${rows}`</Typography> */}
+          </GridCol>
+          <GridCol span={{ base: 12, md: 4, lg: 4 }} />
 
-					<GridCol span={{ base: 12, md: 4, lg: 4 }} />
-					<GridCol span={{ base: 10, md: 4, lg: 4 }}>
-						<Group justify="center">
-							{/* <Button size="lg" component="a" href="#contact-section" color='lightseagreen'>
+          <GridCol span={{ base: 12, md: 4, lg: 4 }} />
+          <GridCol span={{ base: 10, md: 4, lg: 4 }}>
+            <Group justify="center">
+              {/* <Button size="lg" component="a" href="#contact-section" color='lightseagreen'>
                 Say Hello
               </Button> */}
-							{/* <Button
+              {/* <Button
 								size="lg"
 								component="a"
 								href="#project-section"
@@ -190,14 +172,14 @@ export default function SynthPage() {
 								Projects
 								<IconExternalLink style={{ paddingLeft: "2px" }} />
 							</Button> */}
-						</Group>
-					</GridCol>
-					<GridCol span={{ base: 12, md: 4, lg: 4 }} />
-				</Grid>
-				<br />
-				<br />
-				<br />
-			</Box>
-		</>
-	);
+            </Group>
+          </GridCol>
+          <GridCol span={{ base: 12, md: 4, lg: 4 }} />
+        </Grid>
+        <br />
+        <br />
+        <br />
+      </Box>
+    </>
+  );
 }
