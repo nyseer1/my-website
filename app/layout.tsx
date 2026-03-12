@@ -1,12 +1,11 @@
 import "@mantine/core/styles.css";
-import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core"; //If your application has server side rendering, add ColorSchemeScript to the <head /> of your application and spread mantineHtmlProps on the <html /> element to avoid seeing a hydration warning:
+import { mantineHtmlProps } from "@mantine/core"; //If your application has server side rendering, add ColorSchemeScript to the <head /> of your application and spread mantineHtmlProps on the <html /> element to avoid seeing a hydration warning:
 import "./globals.css";
-import { createTheme, MantineProvider } from "@mantine/core";
+import { MantineProvider } from "@mantine/core";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { HeaderSimple } from "@/components/HeaderSimple";
-import Head from "next/head";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -35,7 +34,7 @@ export default function RootLayout({
 			>
 				<MantineProvider>
 					{/* header that is rendered client side so it can use hooks */}
-					<HeaderSimple /> 
+					<HeaderSimple />
 					{/* this is where all the pages get rendered */}
 					{children}
 				</MantineProvider>

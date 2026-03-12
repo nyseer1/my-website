@@ -1,13 +1,7 @@
 // import Link from 'next/link';
 // import { ColorSchemeToggle } from '../components/ColorSchemeToggle/ColorSchemeToggle';
-import { Box, Button, Grid, GridCol, Group, Image } from "@mantine/core";
+import { Box, Button, Grid, GridCol, Group } from "@mantine/core";
 import { IconExternalLink } from "@tabler/icons-react";
-//so image can work with imports and still use mantine styling:
-import NextImage from "next/image";
-// header that i reuse and the icons that it uses';
-// import { HeaderSimple } from "@/components/HeaderSimpleHome";
-//to use local images in nextjs
-import myPhoto from "../public/nyseer.png";
 
 export default function HomePage() {
 	return (
@@ -72,6 +66,7 @@ export default function HomePage() {
 				<br />
 				<br />
 
+
 				{/* Content of the section */}
 				<div id="project-section">
 					<Grid>
@@ -79,6 +74,85 @@ export default function HomePage() {
 
 						<GridCol span={{ base: 10, md: 6, lg: 6 }}>
 							<h1>Featured Projects</h1>
+						</GridCol>
+
+						<GridCol span={{ base: 10, md: 3, lg: 3 }} />
+						<GridCol span={{ base: 10, md: 3, lg: 3 }} />
+
+						<GridCol span={{ base: 12, md: 4, lg: 4 }}>
+							<h2>Web Synth-Sequencer</h2>
+							<br />
+							<br />
+							<br />
+							<p>
+								Synthesizer Instrument and Sequencer. Aiming to mimic the synth capabilities of an analog synth such as the 	 in addition to a 16 step sequencer.
+								<br />Built using Web Audio API and Tone.js
+
+
+							</p>
+						</GridCol>
+						<GridCol span={{ base: 12, md: 3, lg: 3 }}>
+							<h1>picture here</h1>
+							<br />
+							<br />
+							<br />
+							<Group>
+								<Button
+									size="md"
+									component="a"
+									href="/synth"
+									color="lightseagreen"
+								>
+									Try it Now!
+								</Button>
+								<Button size="md" component="a" href="/projects" color="dark">
+									Github
+									<IconExternalLink style={{ paddingLeft: "2px" }} />
+								</Button>
+								<Button
+									size="md"
+									component="a"
+									href="#home-section"
+									variant="default"
+								>
+									Back To Top
+								</Button>
+							</Group>
+						</GridCol>
+						{/* button group */}
+					</Grid>
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					<br />
+					{/* end of project section */}
+				</div>
+
+				<div id="project-section-alt">
+					<Grid>
+						<GridCol span={{ base: 10, md: 3, lg: 3 }} />
+
+						<GridCol span={{ base: 10, md: 6, lg: 6 }}>
 						</GridCol>
 
 						<GridCol span={{ base: 10, md: 3, lg: 3 }} />
@@ -154,7 +228,10 @@ export default function HomePage() {
 					<br />
 					<br />
 					<br />
+					{/* end of project section */}
 				</div>
+
+
 				{/* Content of the section */}
 				<div id="contact-section">
 					<br />

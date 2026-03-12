@@ -1,5 +1,5 @@
 "use client"; // Required for Web Audio API (ensures the code only runs in the browser where the window object and AudioContext are available)
-import { StartSynth } from "./StartSynth";
+import { Synth } from "./Synth";
 import "./synth.css";
 /*
 might start writing notes explicitly in txt files or comments of my own code.
@@ -108,8 +108,7 @@ can use a useEffect return function to call synth.dispose(). This prevents memor
 
 */
 
-import { Box, Button, Grid, GridCol, Group, Typography } from "@mantine/core";
-import { IconExternalLink } from "@tabler/icons-react";
+import { Box, Grid, GridCol, Group, } from "@mantine/core";
 
 export default function SynthPage() {
 
@@ -124,22 +123,7 @@ export default function SynthPage() {
           <GridCol span={{ base: 1, md: 5, lg: 5 }} />
           <GridCol span={{ base: 12, md: 2, lg: 2 }}>
             <Group justify="center">
-              <StartSynth />
-              {/* <div className="piano">
-                <div className="key white" data-note="C4"></div>
-                <div className="key black" data-note="C#4"></div>
-                <div className="key white" data-note="D4"></div>
-                <div className="key black" data-note="D#4"></div>
-                <div className="key white" data-note="E4"></div>
-                <div className="key white" data-note="F4"></div>
-                <div className="key black" data-note="F#4"></div>
-                <div className="key white" data-note="G4"></div>
-                <div className="key black" data-note="G#4"></div>
-                <div className="key white" data-note="A4"></div>
-                <div className="key black" data-note="A#4"></div>
-                <div className="key white" data-note="B4"></div>
-                <div className="key white" data-note="C5"></div>
-              </div> */}
+              <Synth />
             </Group>
           </GridCol>
           <GridCol span={{ base: 1, md: 5, lg: 5 }} />
