@@ -1,5 +1,5 @@
 "use client"; // Required for Web Audio API (ensures the code only runs in the browser where the window object and AudioContext are available)
-import { Synth } from "./Synth";
+import { SynthContainer } from "./SynthContainer";
 import "./synth.css";
 /*
 might start writing notes explicitly in txt files or comments of my own code.
@@ -123,7 +123,7 @@ export default function SynthPage() {
           <GridCol span={{ base: 1, md: 5, lg: 5 }} />
           <GridCol span={{ base: 12, md: 2, lg: 2 }}>
             <Group justify="center">
-              <Synth />
+              <SynthContainer />
             </Group>
           </GridCol>
           <GridCol span={{ base: 1, md: 5, lg: 5 }} />
