@@ -6,6 +6,7 @@ import { useState } from "react";
 // only runs in the browser where the window object and AudioContext are available)
 import * as Tone from "tone";
 
+//lazy loading client component
 const Synth = dynamic(
   () => import("./Synth").then((mod) => mod.Keyboard),
   { ssr: false },
