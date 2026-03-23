@@ -16,10 +16,9 @@
 		"@tabler/icons-react": "^3.38.0",
 		"dotenv": "^17.3.1",
 		"mysql2": "^3.18.2",
-		"next": "16.1.6",
+		"next": "16.1.7",
 		"react": "19.2.3",
 		"react-dom": "19.2.3",
-		"recharts": "^3.7.0",
 		"standardized-audio-context": "^25.3.77",
 		"tone": "^15.1.22",
 		"tslib": "^2.8.1"
