@@ -1,18 +1,23 @@
 @import "tailwindcss";
 
 h1 {
-  font-size: 3em; /* Example font size (adjust as needed) */
+  font-size: 3em;
+  /* Example font size (adjust as needed) */
   text-align: center;
 }
 
 h2 {
-  font-size: 2.2em; /* Example font size (adjust as needed) */
+  font-size: 2.2em;
+  /* Example font size (adjust as needed) */
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+}
 
 p {
-    font-size: 1em; /* Example font size (adjust as needed) */
+  font-size: 1em;
+  /* Example font size (adjust as needed) */
 
 }
 
@@ -21,7 +26,7 @@ h4 {
   font-size: 2em;
 }
 
-.bar{
+.bar {
   background-color: lightseagreen;
 }
 
@@ -42,4 +47,3 @@ h4 {
   color: black;
 
 }
-
