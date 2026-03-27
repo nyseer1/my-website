@@ -44,7 +44,7 @@ export default function HomePage() {
 					<GridCol span={{ base: 12, md: 4, lg: 4 }} />
 
 					<GridCol span={{ base: 12, md: 4, lg: 4 }} />
-					<GridCol span={{ base: 10, md: 4, lg: 4 }}>
+					<GridCol span={{ base: 12, md: 4, lg: 4 }}>
 						<Group justify="center">
 							{/* <Button size="lg" component="a" href="#contact-section" color='lightseagreen'>
                 Say Hello
@@ -108,7 +108,8 @@ export default function HomePage() {
 							<br />
 							<br />
 							<br />
-							<Group>
+							{/* tailwind qquick way to add padding */}
+							<Group className="p-8">
 								<Button
 									size="md"
 									component="a"
@@ -192,7 +193,8 @@ export default function HomePage() {
 							<br />
 							<br />
 							<br />
-							<Group>
+							{/* tailwind qquick way to add padding */}
+							<Group className="p-8">
 								<Button
 									size="md"
 									component="a"

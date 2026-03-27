@@ -37,15 +37,17 @@ export default function SynthPage() {
 
           <GridCol span={{ base: 12, md: 12, lg: 12 }}>
             <h4>
-              <i>Synth</i>
+              <i>Dynamic XY Web-Synth</i>
             </h4>
           </GridCol>
 
           <GridCol span={{ base: 12, md: 4, lg: 4 }} />
           <GridCol span={{ base: 12, md: 4, lg: 4 }}>
             <p>Touch the pad to play notes!<br />
-              Pitch is controlled by your finger's X position and filter cutoff by the y position.
+              Pitch is controlled by the X position of your finger, and filter cutoff is controlled by the Y position.
             </p>
+
+            <p>Developed by Nyseer Couse</p>
 
           </GridCol>
           <GridCol span={{ base: 12, md: 4, lg: 4 }} />
