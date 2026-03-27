@@ -2,12 +2,19 @@
 
 h1 {
   font-size: 3em;
+  padding: 1em;
   /* Example font size (adjust as needed) */
   text-align: center;
 }
 
 h2 {
   font-size: 2.2em;
+  padding: 1em;
+  /* Example font size (adjust as needed) */
+}
+
+h3 {
+  padding: 1em;
   /* Example font size (adjust as needed) */
 }
 
@@ -17,6 +24,7 @@ html {
 
 p {
   font-size: 1em;
+  padding: 1em;
   /* Example font size (adjust as needed) */
 
 }
@@ -45,5 +53,4 @@ h4 {
 #contact-section {
   background-color: white;
   color: black;
-
 }

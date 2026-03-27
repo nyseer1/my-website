@@ -77,7 +77,7 @@ export function HeaderSimple() {
             </div>
             {/* groups the logo and buttons together, they each need their own group to justify in different variations */}
             <Group gap={5} justify="space-around">
-              <Group gap={5} visibleFrom="xs" justify="flex-start">
+              <Group gap={5} justify="flex-start">
                 <MantineProvider theme={theme}>
                   <Button
                     variant="transparent"
@@ -110,7 +110,7 @@ export function HeaderSimple() {
                     opened={opened}
                     onClick={toggle}
                     hiddenFrom="lg"
-                    size="sm"
+                    size="lg"
                     aria-label="Toggle navigation"
                   />
                 </Menu.Target>
@@ -123,11 +123,11 @@ export function HeaderSimple() {
 
                   <Menu.Label>Projects</Menu.Label>
                   <Menu.Item leftSection={<IconArrowsLeftRight size={14} />}>
-                    Synth
+                    <a href="/synth"  >Synth</a>
                   </Menu.Item>
-                  <Menu.Item leftSection={<IconPhoto size={14} />}>
+                  {/* <Menu.Item leftSection={<IconPhoto size={14} />}>
                     Database
-                  </Menu.Item>
+                  </Menu.Item> */}
                 </Menu.Dropdown>
               </Menu>
             </Group>

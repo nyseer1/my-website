@@ -72,24 +72,36 @@ export default function HomePage() {
 					<Grid>
 						<GridCol span={{ base: 10, md: 3, lg: 3 }} />
 
-						<GridCol span={{ base: 10, md: 6, lg: 6 }}>
-							<h1>Featured Projects</h1>
+						<GridCol span={{ base: 12, md: 6, lg: 6 }}>
+							<h1>My Featured Projects</h1>
 						</GridCol>
 
 						<GridCol span={{ base: 10, md: 3, lg: 3 }} />
 						<GridCol span={{ base: 10, md: 3, lg: 3 }} />
 
 						<GridCol span={{ base: 12, md: 4, lg: 4 }}>
-							<h2>Web Synth-Sequencer</h2>
+							<h2>Dynamic XY Web Synth Sequencer</h2>
+							<br />
+							<h3>High-performance analog-modeled synthesizer developed using the Web Audio API and Tone.js, featuring customizable oscillators, ADSR envelopes, resonant filters and a 16 step sequencer.</h3>
 							<br />
 							<br />
+							<ul className="list-disc p-8">
+								<li>Optimized UI/UX for low-latency interaction, efficient use of  DOM rendering practices to maintain low latency  while processing complex audio graphs.</li>
+								<li>Significantly reduced initial webpage load time by implementing lazy loading and component memoization.</li>
+								<li>Implemented state management to handle real-time parameter modulation without audio artifacts.</li>
+								<li>Architected a precise 16-step sequencer with a global clock sync, ensuring low-latency playback and sample-accurate timing across multiple browser environments.</li>
+							</ul>
+
 							<br />
-							<p>
-								Synthesizer Instrument and Sequencer. Aiming to mimic the synth capabilities of an analog synth such as the 	 in addition to a 16 step sequencer.
-								<br />Built using Web Audio API and Tone.js
+							<br />
 
 
-							</p>
+
+
+
+
+
+
 						</GridCol>
 						<GridCol span={{ base: 12, md: 3, lg: 3 }}>
 							<h1>picture here</h1>
@@ -173,6 +185,7 @@ export default function HomePage() {
 								posuere. Ut hendrerit semper vel class aptent taciti sociosqu.
 								Ad litora torquent per conubia nostra inceptos himenaeos.
 							</p>
+
 						</GridCol>
 						<GridCol span={{ base: 12, md: 3, lg: 3 }}>
 							<h1>picture here</h1>

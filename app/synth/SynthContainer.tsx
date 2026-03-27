@@ -12,7 +12,7 @@ export function SynthContainer() {
   const [showSynth, setShowSynth] = useState(false);
 
   // We store the INDEX (0-3) in state
-  const [osc1wave, setosc1wave] = useState(0);
+  // const [osc1wave, setosc1wave] = useState(0);
 
 
 
@@ -35,15 +35,17 @@ export function SynthContainer() {
   const synth = useRef<Tone.Synth | null>(null);
   const filter = useRef<Tone.Filter | null>(null);
   const filterEnv = useRef<Tone.FrequencyEnvelope | null>(null);
+  const seq = useRef<Tone.Sequence | null>(null);
 
   const [isRecording, setisRecording] = useState(false);
 
+  //store sequencer notes in array, (can be a string of the note and cutoff, or null)
+  // defines object parameters, reference the array and fill it with nulls to default. null means no note
+  const seqData = useRef<({ note: string | null, cutoff: number, type: string } | null)[]>(
+    new Array(16).fill(null)
+  );
 
-
-
-
-
-  //synchronize components (this page) with external system (web audio api)
+  //synchronize components (this page) with external system (web audio api). tells react render this once on page load and never again. better performance
   useEffect(() => {
     //THIS section ONLY runs when component mounts(page first load)-----------------------
     //create a synth and connect it to the main output (your speakers)
@@ -67,27 +69,60 @@ export function SynthContainer() {
 
     filterEnv.current.connect(filter.current.frequency);
 
+    seq.current = new Tone.Sequence((time, step) => {
+      const data = seqData.current[step];
+      if (data && data.note && filterEnv.current) {
+
+        //UPDATE ENVELOPES
+        switch (data.type) {
+
+          case 'D': //only on pointer down
+            synth.current?.triggerAttack(data.note, time);
+            filterEnv.current.triggerAttack(time);
+            break;
+          case 'U': //only on pointer up
+            synth.current?.triggerRelease("+0.1"); //release synth, arg is how many seconds
+            filterEnv.current?.triggerRelease();
+        }
+
+        //on any pointer event
+        //UPDATE X AND Y
+        filterEnv.current.baseFrequency = data.cutoff;
+        synth.current?.frequency.rampTo(data.note, 0.01); //2nd arg is porta in seconds
+
+
+      } //step indexes 
+    }, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]).start(0); //start seq 0
+
+    //config the transport (like a player)
+    Tone.getTransport().loop = true;
+    Tone.getTransport().loopEnd = "1m";
 
     return () => {
       //-----THIS section ONLY runs when the component is destroyed----------------------
 
-      //prevents memory leaks
+      //destroys all synth components to prevent memory leaks
       synth.current?.dispose();
       filter.current?.dispose();
       filterEnv.current?.dispose();
+      Tone.getTransport().stop(); //TODO might not need check later
+
     };
+
   }, []);
 
 
   //* EVENT HANDLERS-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  //TODO pointer up/down, filter y, just set the waveforms one by one with a string and switch cases
+  //TODO set the waveforms one by one with a string and switch cases, ALSO OTHER PARAMETERS
 
   async function handleStartAudio() { //async function means run this function asynchronously so other code can be executed during loading
 
     try {
       // wait for audio context to start before playing audio
       await Tone.start(); //await says wait here until this calculation is done
+      Tone.getTransport().start(); //start transport(player)
+
     } catch (error) {
       // only runs in the browser where the window object and AudioContext are available
       console.error("web audio api not supported !!! :(", error);
@@ -127,9 +162,16 @@ export function SynthContainer() {
     //update position (might not be necessary)
     setPosition({ x, y });
 
-    //update sequencer if recording, else stop here
+    //*RECORDING MODE - (if not recording stop here) ---------
     if (!isRecording) return;
     //get note, quantize it to the nearest time, change value at array[time]
+    const transport = Tone.getTransport();
+    const step = Math.floor(transport.progress * 16); //round to nearest step (there are 16 steps )
+    seqData.current[step] = {
+      note: "" + freq,
+      cutoff: cutoff,
+      type: 'M'
+    };
 
 
   };
@@ -149,8 +191,6 @@ export function SynthContainer() {
     const index = Math.floor(x * (SCALE_NOTES.length - 1));
     const freq = Tone.Frequency(SCALE_NOTES[index]).toFrequency();
 
-
-
     //filter
     const cutoff = 20 * Math.pow(11000 / 40, y); // Formula: min * (max/min)^exponent
     const filterattack = 0.01;
@@ -167,9 +207,19 @@ export function SynthContainer() {
     //update position (might not be necessary)
     setPosition({ x, y });
 
-    //update sequencer if recording, else stop here
+    //*RECORDING MODE - (if not recording stop here) ---------
     if (!isRecording) return;
     //get note, quantize it to the nearest time, change value at array[time]
+    const transport = Tone.getTransport();
+    const step = Math.floor(transport.progress * 16); //round to nearest step (there are 16 steps )
+    seqData.current[step] = {
+      note: "" + freq,
+      cutoff: cutoff,
+      type: 'D'
+    };
+
+
+
   };
 
 
@@ -181,6 +231,18 @@ export function SynthContainer() {
 
     synth.current?.triggerRelease(rstring); //release synth
     filterEnv.current?.triggerRelease();
+
+    const step = Math.floor(Tone.getTransport().progress * 16); //round to nearest step (there are 16 steps )
+
+    //*RECORDING MODE - (if not recording stop here) ---------
+    if (!isRecording) return;
+
+    //record release
+    seqData.current[step] = {
+      note: null,
+      cutoff: cutoff,
+      type: 'U'
+    };
 
   };
 
@@ -246,8 +308,6 @@ export function SynthContainer() {
         <Button
           onPointerDown={async (e) => {
             handleStartAudio(); //handles asynchronous api call to web audio api
-            // start audio context (must be from a user gesture to start web audio api)
-            await Tone.start();
           }}
         >
           Start Synth

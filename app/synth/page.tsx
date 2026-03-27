@@ -43,8 +43,10 @@ export default function SynthPage() {
 
           <GridCol span={{ base: 12, md: 4, lg: 4 }} />
           <GridCol span={{ base: 12, md: 4, lg: 4 }}>
-            <h3>description</h3>
-            {/* <Typography>`${rows}`</Typography> */}
+            <p>Touch the pad to play notes!<br />
+              Pitch is controlled by your finger's X position and filter cutoff by the y position.
+            </p>
+
           </GridCol>
           <GridCol span={{ base: 12, md: 4, lg: 4 }} />
 
