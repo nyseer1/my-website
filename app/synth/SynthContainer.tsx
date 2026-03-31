@@ -95,6 +95,7 @@ export function SynthContainer() {
 
             case "M": //pointer moved
               //TODO test more: A WAY TO TRIGGER ATTACK ONLY IF NO NOTE IS CURRENTLY PLAYING 
+              //TODO OH WAIT I CAN JUST CHECK IF THE PREVIOUS STEP HAD A NULL NOTE do this later
               if (synth.current) {
                 const isSilent = synth.current.envelope.value < 0.02; //SMALL THRESHOLD FOR RETRIGGERING IF 
                 if (isSilent) { synth.current.triggerAttack(`${data.note}`, time + 0.001); }
