@@ -11,20 +11,8 @@ import {
   Title,
 } from "@mantine/core";
 import { useDisclosure, useHeadroom } from "@mantine/hooks";
+import { IconArrowsLeftRight } from "@tabler/icons-react";
 import classes from "./HeaderSimple.module.css";
-
-// import Link from 'next/link';
-
-import { IconArrowsLeftRight, IconPhoto } from "@tabler/icons-react";
-import { usePathname } from "next/navigation"; //hook to store the pathnames of different pages
-
-const linkshome = [
-  { link: "/", label: "Home" },
-  { link: "#about-section", label: "About Me" },
-  { link: "#project-section", label: "Projects" },
-  { link: "#skills-section", label: "Skills" },
-  { link: "#contact-section", label: "Hire Me" },
-];
 
 const links = [
   { link: "/", label: "Home" },
@@ -41,20 +29,12 @@ const theme = createTheme({
 });
 
 export function HeaderSimple() {
-  const pathname = usePathname(); //hook to store pathname of pages
-
   // this initializes the headroom for navbar
   const pinned = useHeadroom({ fixedAt: 100 });
 
   const [opened, { toggle }] = useDisclosure(false);
 
   const items = links.map((link) => (
-    <a key={link.label} href={link.link} className={classes.link}>
-      {link.label}
-    </a>
-  ));
-
-  const itemshome = linkshome.map((link) => (
     <a key={link.label} href={link.link} className={classes.link}>
       {link.label}
     </a>
@@ -96,7 +76,7 @@ export function HeaderSimple() {
               {/* navbar items/buttons (not including logo) */}
               <Group gap={5} visibleFrom="lg" justify="flex-end">
                 {/* if home, put jump/anchor link. else add home directory to links */}
-                {pathname === "/" ? <>{itemshome}</> : <>{items}</>}
+                {items}
               </Group>
 
               {/* Menu burger - only visible on size smaller than specified screen size in hiddenFrom= */}
@@ -123,7 +103,7 @@ export function HeaderSimple() {
 
                   <Menu.Label>Projects</Menu.Label>
                   <Menu.Item leftSection={<IconArrowsLeftRight size={14} />}>
-                    <a href="/synth"  >Synth</a>
+                    <a href="/synth">Synth</a>
                   </Menu.Item>
                   {/* <Menu.Item leftSection={<IconPhoto size={14} />}>
                     Database
