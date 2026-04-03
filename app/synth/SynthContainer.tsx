@@ -277,12 +277,13 @@ export function SynthContainer() {
             (<Button size="lg" color="green"
               onPointerDown={async () => {
                 setIsPlaying(false);
-                Tone.getTransport().pause();
-
-
+                Tone.getTransport().pause(); //pause the thing scheduling the notes
+                //turn off current sounds
+                synth.current?.triggerRelease();
               }}>
               Pause
-            </Button>) :
+            </Button>)
+            :
             (<Button size="lg" color="green"
               onPointerDown={async () => {
                 setIsPlaying(true);
