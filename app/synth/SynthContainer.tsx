@@ -35,6 +35,7 @@ export function SynthContainer() {
   const seq = useRef<Tone.Sequence | null>(null);
 
   const [isRecording, setisRecording] = useState(false);
+  const [IsPlaying, setIsPlaying] = useState(false);
 
   //store sequencer notes in array, (can be a string of the note and cutoff, or null)
   // defines object parameters, reference the array and fill it with nulls to default. null means no note
@@ -94,11 +95,9 @@ export function SynthContainer() {
               break;
 
             case "M": //pointer moved
-              //TODO test more: A WAY TO TRIGGER ATTACK ONLY IF NO NOTE IS CURRENTLY PLAYING 
-              //TODO OH WAIT I CAN JUST CHECK IF THE PREVIOUS STEP HAD A NULL NOTE do this later
               if (synth.current) {
-                const isSilent = synth.current.envelope.value < 0.02; //SMALL THRESHOLD FOR RETRIGGERING IF 
-                if (isSilent) { synth.current.triggerAttack(`${data.note}`, time + 0.001); }
+                //if previous step's note is null, trigger attack again. without this notes will just be silent after a note off 
+                if (!seqData.current[step - 1]?.note) { synth.current.triggerAttack(`${data.note}`, time + 0.001); }
               }
               //UPDATE X AND Y
               console.log("freq is " + data.note);
@@ -117,7 +116,7 @@ export function SynthContainer() {
       },
       //the array is what step variable reads one by one. so step will have value of 0-15 to play note at step 0-15 
       [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n"
-    ).start(0); //start seq 0 //TODO NEED ARRAY THAT IS ONLY THE NOTES OR A WAY TO MAP IT
+    ).start(0); //start seq 0
 
     //config the transport (like a player)
     Tone.getTransport().loop = true;
@@ -175,7 +174,7 @@ export function SynthContainer() {
     const freq = Tone.Frequency(SCALE_NOTES[index]).toFrequency();
 
     const porta = 0.02; //portamento
-    console.log("note is " + SCALE_NOTES[index]); //TODO TEST
+    console.log("note is " + SCALE_NOTES[index]);
     synth.current?.frequency.rampTo(freq, porta); //2nd arg how fast in seconds
 
     //update filter
@@ -224,7 +223,7 @@ export function SynthContainer() {
     filterEnv.current.baseFrequency = cutoff; //set filter cutoff
 
     //start envelopes simultaneously
-    console.log("note is " + SCALE_NOTES[index]); //TODO TEST
+    console.log("note is " + SCALE_NOTES[index]);
     synth.current?.triggerAttack(freq);
     filterEnv.current.triggerAttack();
 
@@ -274,9 +273,26 @@ export function SynthContainer() {
             Stop
           </Button>
 
-          <Button size="lg" color="green">
-            Start/Pause
-          </Button>
+          {IsPlaying ?
+            (<Button size="lg" color="green"
+              onPointerDown={async () => {
+                setIsPlaying(false);
+                Tone.getTransport().pause();
+
+
+              }}>
+              Pause
+            </Button>) :
+            (<Button size="lg" color="green"
+              onPointerDown={async () => {
+                setIsPlaying(true);
+                Tone.getTransport().start();
+
+              }}>
+              Play
+            </Button>)
+
+          }
 
           {isRecording ? (
             <Button
