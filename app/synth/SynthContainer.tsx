@@ -35,7 +35,7 @@ export function SynthContainer() {
   const seq = useRef<Tone.Sequence | null>(null);
 
   const [isRecording, setisRecording] = useState(false);
-  const [IsPlaying, setIsPlaying] = useState(false);
+  const [IsPlaying, setIsPlaying] = useState(true);
 
   //store sequencer notes in array, (can be a string of the note and cutoff, or null)
   // defines object parameters, reference the array and fill it with nulls to default. null means no note
