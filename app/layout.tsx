@@ -2,6 +2,7 @@ import "@mantine/core/styles.css";
 import { mantineHtmlProps } from "@mantine/core"; //If your application has server side rendering, add ColorSchemeScript to the <head /> of your application and spread mantineHtmlProps on the <html /> element to avoid seeing a hydration warning:
 import "./globals.css";
 import { MantineProvider } from "@mantine/core";
+import { ModalsProvider } from '@mantine/modals';
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 

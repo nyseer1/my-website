@@ -35,7 +35,8 @@ export function SynthContainer() {
   const seq = useRef<Tone.Sequence | null>(null);
 
   const [isRecording, setisRecording] = useState(false);
-  const [IsPlaying, setIsPlaying] = useState(true);
+  const [IsPlaying, setIsPlaying] = useState(true); //if transport is currently running
+  const [isClearLoopWindow, setClearLoopWindow] = useState(false); //if clearloopconfirm is open
 
   //store sequencer notes in array, (can be a string of the note and cutoff, or null)
   // defines object parameters, reference the array and fill it with nulls to default. null means no note
@@ -69,14 +70,11 @@ export function SynthContainer() {
 
     seq.current = new Tone.Sequence(
       (time, step: number) => {
-
         const data = seqData.current[step];
-        console.log("step: " + step + ", freq is " + data?.note)
+        console.log("step: " + step + ", freq is " + data?.note);
         if (data) {
-
           //UPDATE
           switch (data.type) {
-
             case "D": //pointer down
               //0.0001 for buffer. trying to restart an attack immediately after a release, Tone.js might throw "Strictly Greater Than" Error
               synth.current?.triggerAttack(`${data.note}`, time + 0.001); //Template literals are preferred over string concatenation. handles type conversion and supports multi line (also better readability).
@@ -91,20 +89,25 @@ export function SynthContainer() {
 
             case "U": //pointer up
               synth.current?.triggerRelease(time + 0.05); //release synth, arg is how many seconds
-              if (filterEnv.current) { filterEnv.current.triggerRelease(); }
+              if (filterEnv.current) {
+                filterEnv.current.triggerRelease();
+              }
               break;
 
             case "M": //pointer moved
               if (synth.current) {
-                //if previous step's note is null, trigger attack again. without this notes will just be silent after a note off 
-                if (!seqData.current[step - 1]?.note) { synth.current.triggerAttack(`${data.note}`, time + 0.001); }
+                //if previous step's note is null, trigger attack again. without this notes will just be silent after a note off
+                if (!seqData.current[step - 1]?.note) {
+                  synth.current.triggerAttack(`${data.note}`, time + 0.001);
+                }
               }
               //UPDATE X AND Y
               console.log("freq is " + data.note);
-              if (filterEnv.current) { filterEnv.current.baseFrequency = data.cutoff; }
+              if (filterEnv.current) {
+                filterEnv.current.baseFrequency = data.cutoff;
+              }
               synth.current?.frequency.rampTo(`${data.note}`, 0.01); //2nd arg is porta in seconds
               break;
-
           }
         } //step indexes
 
@@ -112,10 +115,10 @@ export function SynthContainer() {
         Tone.getDraw().schedule(() => {
           // console.log("visuals should be happening now");
         }, time);
-
       },
-      //the array is what step variable reads one by one. so step will have value of 0-15 to play note at step 0-15 
-      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n"
+      //the array is what step variable reads one by one. so step will have value of 0-15 to play note at step 0-15
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+      "16n",
     ).start(0); //start seq 0
 
     //config the transport (like a player)
@@ -260,7 +263,6 @@ export function SynthContainer() {
       type: "U",
     };
   };
-
   // -------------------------------------------------------------------------------------------------------------------------------------------------------
 
   return (
@@ -273,27 +275,31 @@ export function SynthContainer() {
             Stop
           </Button>
 
-          {IsPlaying ?
-            (<Button size="lg" color="green"
+          {IsPlaying ? (
+            <Button
+              size="lg"
+              color="green"
               onPointerDown={async () => {
                 setIsPlaying(false);
                 Tone.getTransport().pause(); //pause the thing scheduling the notes
                 //turn off current sounds
                 synth.current?.triggerRelease();
-              }}>
+              }}
+            >
               Pause
-            </Button>)
-            :
-            (<Button size="lg" color="green"
+            </Button>
+          ) : (
+            <Button
+              size="lg"
+              color="green"
               onPointerDown={async () => {
                 setIsPlaying(true);
                 Tone.getTransport().start();
-
-              }}>
+              }}
+            >
               Play
-            </Button>)
-
-          }
+            </Button>
+          )}
 
           {isRecording ? (
             <Button
@@ -315,6 +321,34 @@ export function SynthContainer() {
             >
               Recording Off
             </Button>
+          )}
+
+          <Button
+            size="lg"
+            color="#000000"
+            onPointerDown={async () => {
+              setClearLoopWindow(true);
+            }}
+          >
+            Clear Loop
+          </Button>
+
+          {isClearLoopWindow ? (
+            <Button
+              size="lg"
+              color="#000000"
+              onPointerDown={async () => {
+                setClearLoopWindow(false);
+                seqData.current.forEach((data, step, seqData) => {
+                  seqData[step] = null;
+                }); //clear all notes in track
+                synth.current?.triggerRelease(); //silence the currently playing synth
+              }}
+            >
+              Are You Sure?
+            </Button>
+          ) : (
+            <></>
           )}
 
           {/* render xy pad here */}

@@ -10,9 +10,9 @@
 		"format": "biome format --write"
 	},
 	"dependencies": {
-		"@mantine/charts": "^8.3.16",
 		"@mantine/core": "^8.3.16",
 		"@mantine/hooks": "^8.3.16",
+		"@mantine/modals": "^8.3.18",
 		"@tabler/icons-react": "^3.38.0",
 		"dotenv": "^17.3.1",
 		"mysql2": "^3.18.2",
