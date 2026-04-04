@@ -71,7 +71,7 @@ export function SynthContainer() {
       (time, step: number) => {
 
         const data = seqData.current[step];
-        console.log("step: " + step + ", note is " + data?.note)
+        console.log("step: " + step + ", freq is " + data?.note)
         if (data) {
 
           //UPDATE
@@ -174,7 +174,7 @@ export function SynthContainer() {
     const freq = Tone.Frequency(SCALE_NOTES[index]).toFrequency();
 
     const porta = 0.02; //portamento
-    console.log("note is " + SCALE_NOTES[index]);
+    console.log("freq is " + SCALE_NOTES[index]);
     synth.current?.frequency.rampTo(freq, porta); //2nd arg how fast in seconds
 
     //update filter
