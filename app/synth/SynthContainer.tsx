@@ -190,7 +190,8 @@ export function SynthContainer() {
 
     //*RECORDING MODE - (if not recording stop here) ---------
     if (!isRecording) return;
-    //get note, quantize it to the nearest time, change value at array[time]
+
+    //get note, quantize it to the nearest time, change value at array[time] 
     const transport = Tone.getTransport();
     const step = Math.floor(transport.progress * 16); //round to nearest step (there are 16 steps )
     seqData.current[step] = {
@@ -339,9 +340,7 @@ export function SynthContainer() {
               color="#000000"
               onPointerDown={async () => {
                 setClearLoopWindow(false);
-                seqData.current.forEach((data, step, seqData) => {
-                  seqData[step] = null;
-                }); //clear all notes in track
+                seqData.current.length = 0; //clear all notes instantly. garbage collector will reclaim the memory later
                 synth.current?.triggerRelease(); //silence the currently playing synth
               }}
             >

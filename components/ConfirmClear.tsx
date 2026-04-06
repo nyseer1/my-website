@@ -1,7 +1,7 @@
 import { Button, Text } from '@mantine/core';
 import { modals } from '@mantine/modals';
 
-export default function confirm() {
+export default function ConfirmClear() {
     const openModal = () => modals.openConfirmModal({
         title: 'Please confirm your action',
         children: (

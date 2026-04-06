@@ -37,7 +37,7 @@ export default function RootLayout({
 					{/* header that is rendered client side so it can use hooks */}
 					<HeaderSimple />
 					{/* this is where all the pages get rendered */}
-					{children}
+					<ModalsProvider>{children}</ModalsProvider>
 				</MantineProvider>
 			</body>
 		</html>

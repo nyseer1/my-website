@@ -9,22 +9,15 @@ might want to defer loading a modal until a user clicks to open it.)
 */
 import { Box, Button, Grid, GridCol, Group } from "@mantine/core";
 import dynamic from "next/dynamic";
-import confirm
+import confirm from "@/components/ConfirmClear";
+import ConfirmClear from "@/components/ConfirmClear";
 
 export default function SynthPage() {
-  const handleDelete = async (): Promise<void> => {
-    // Fully type-safe: message is required, result is boolean
-    const result = await confirm({
-      message: "Are you sure you want to delete this item?",
-    });
 
-    if (result) {
-      // User confirmed - proceed with deletion here
-    }
-  };
   return (
     <>
-      <Button onClick={handleDelete}></Button>
+      <ConfirmClear />
+
     </>
   );
 }
