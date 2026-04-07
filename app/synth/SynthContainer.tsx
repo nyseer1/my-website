@@ -1,5 +1,6 @@
 "use client"; // Required for Web Audio API, (ensures the code runs on the client)
 import { Button, getBreakpointValue } from "@mantine/core";
+import { modals } from "@mantine/modals";
 import dynamic from "next/dynamic";
 import { PointerEvent, useEffect, useRef, useState } from "react";
 import { AudioContext, OfflineAudioContext } from "standardized-audio-context";
@@ -36,7 +37,27 @@ export function SynthContainer() {
 
   const [isRecording, setisRecording] = useState(false);
   const [IsPlaying, setIsPlaying] = useState(true); //if transport is currently running
-  const [isClearLoopWindow, setClearLoopWindow] = useState(false); //if clearloopconfirm is open
+
+  //MODALS SECTION
+  const openClearModal = () => modals.openConfirmModal({
+    title: 'Are you sure you would like to delete the loop?',
+    children: (
+      <p >
+        This action cannot be undone!
+      </p>
+    ),
+    labels: { confirm: 'Confirm', cancel: 'Cancel' },
+    onCancel: () => console.log('Canceled clear loop'),
+    onConfirm: async () => {
+      seqData.current.length = 0; //clear all notes instantly. 
+      synth.current?.triggerRelease(); //silence the currently playing synth\
+      console.log('Confirmed clear loop');
+    },
+  });
+
+  //REFS
+  const isButtonHeld = useRef(false); //for playing notes while playing a recording
+  const porta = useRef(0.02);
 
   //store sequencer notes in array, (can be a string of the note and cutoff, or null)
   // defines object parameters, reference the array and fill it with nulls to default. null means no note
@@ -71,42 +92,51 @@ export function SynthContainer() {
     seq.current = new Tone.Sequence(
       (time, step: number) => {
         const data = seqData.current[step];
-        console.log("step: " + step + ", freq is " + data?.note);
+        // console.log("step: " + step + ", freq is " + data?.note);
         if (data) {
           //UPDATE
           switch (data.type) {
             case "D": //pointer down
               //0.0001 for buffer. trying to restart an attack immediately after a release, Tone.js might throw "Strictly Greater Than" Error
-              synth.current?.triggerAttack(`${data.note}`, time + 0.001); //Template literals are preferred over string concatenation. handles type conversion and supports multi line (also better readability).
-              synth.current?.frequency.rampTo(`${data.note}`, 0.01); //2nd arg is porta in seconds
-              if (filterEnv.current) {
-                filterEnv.current.triggerAttack(time);
-                //UPDATE X AND Y
-                console.log("freq is " + data.note);
-                filterEnv.current.baseFrequency = data.cutoff;
+              if (!isButtonHeld.current) { //buttonheld makes sure recording dosent play ontop of you
+                synth.current?.triggerAttack(`${data.note}`, time + 0.001); //Template literals are preferred over string concatenation. handles type conversion and supports multi line (also better readability).
+                synth.current?.frequency.rampTo(`${data.note}`, porta.current); //2nd arg is porta in seconds
+
+                if (filterEnv.current) {
+                  filterEnv.current.triggerAttack(time);
+
+                  console.log("freq is " + data.note);
+                  filterEnv.current.baseFrequency = data.cutoff;
+                }
               }
+
               break;
 
             case "U": //pointer up
-              synth.current?.triggerRelease(time + 0.05); //release synth, arg is how many seconds
-              if (filterEnv.current) {
-                filterEnv.current.triggerRelease();
+              if (!isButtonHeld.current) {
+                synth.current?.triggerRelease(time + 0.05); //release synth, arg is how many seconds
+                if (filterEnv.current) {
+                  filterEnv.current.triggerRelease();
+                }
               }
               break;
 
             case "M": //pointer moved
-              if (synth.current) {
-                //if previous step's note is null, trigger attack again. without this notes will just be silent after a note off
-                if (!seqData.current[step - 1]?.note) {
-                  synth.current.triggerAttack(`${data.note}`, time + 0.001);
+              if (!isButtonHeld.current) {
+                if (synth.current) {
+                  //buttonheld makes sure recording dosent play ontop of you
+                  synth.current?.frequency.rampTo(`${data.note}`, porta.current); //2nd arg is porta in seconds
+                  if (!seqData.current[step - 1]?.note) { //if previous step's note is null, trigger attack again. without this notes will just be silent after a note off
+                    synth.current.triggerAttack(`${data.note}`, time + 0.001);
+                  }
+
+                  // console.log("freq is " + data.note);
+                  if (filterEnv.current) {
+                    filterEnv.current.baseFrequency = data.cutoff;
+                  }
                 }
               }
-              //UPDATE X AND Y
-              console.log("freq is " + data.note);
-              if (filterEnv.current) {
-                filterEnv.current.baseFrequency = data.cutoff;
-              }
-              synth.current?.frequency.rampTo(`${data.note}`, 0.01); //2nd arg is porta in seconds
+
               break;
           }
         } //step indexes
@@ -158,12 +188,14 @@ export function SynthContainer() {
     }
   }
 
-  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    //just tells typescript its a pointer event so it knows the type to catch errors for
-
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => { //tells typescript its a pointer event so it knows the type to catch errors for
     if (e.buttons !== 1) return; //confirm that user is either left clicking or touching (necessary on pointerMove events to prevent overlapping on pointerDown events)
-
     if (!padRef.current) return; //end here if we do not have a reference to the pad
+    //NOTHING CAN GO BEFORE THOSE RETURN STATEMENTS OR ELSE BIG ERROR
+
+    isButtonHeld.current = true;
+    console.log('true');
+
     const rect = padRef.current.getBoundingClientRect(); //get the bounds of the pad
 
     //initialize to 0, calculate x and y position on pad based on input
@@ -176,9 +208,8 @@ export function SynthContainer() {
     const index = Math.floor(x * (SCALE_NOTES.length - 1));
     const freq = Tone.Frequency(SCALE_NOTES[index]).toFrequency();
 
-    const porta = 0.02; //portamento
-    console.log("freq is " + SCALE_NOTES[index]);
-    synth.current?.frequency.rampTo(freq, porta); //2nd arg how fast in seconds
+    // console.log("freq is " + SCALE_NOTES[index]);
+    synth.current?.frequency.rampTo(freq, porta.current); //2nd arg how fast in seconds
 
     //update filter
     const cutoff = 20 * (11000 / 40) ** y; // log: min * (max/min)^exponent
@@ -201,8 +232,9 @@ export function SynthContainer() {
     };
   };
 
-  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    //just tells typescript its a pointer event so it knows the type to catch errors for
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => { //just tells typescript its a pointer event so it knows the type to catch errors for
+    isButtonHeld.current = true;
+    console.log('true');
 
     if (!padRef.current) return; //end here if we do not have a reference to the pad
     const rect = padRef.current.getBoundingClientRect(); //get the bounds of the pad
@@ -245,8 +277,9 @@ export function SynthContainer() {
     };
   };
 
-  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    //just tells typescript its a pointer event so it knows the type to catch errors for
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => { //tells typescript its a pointer event so it knows the type to catch errors for
+    isButtonHeld.current = false;
+    console.log('false');
 
     //set release
     const release = 0.1;
@@ -272,14 +305,19 @@ export function SynthContainer() {
       {showSynth ? (
         <>
           {/* sequencer buttons */}
-          <Button size="lg" color="#333333">
+          <Button size="lg" color="#333333"
+            onPointerDown={async () => {
+              synth.current?.triggerRelease();
+              Tone.getTransport().stop();
+              Tone.getTransport().start();
+            }}>
+
+
             Stop
           </Button>
 
           {IsPlaying ? (
-            <Button
-              size="lg"
-              color="green"
+            <Button size="lg" color="green"
               onPointerDown={async () => {
                 setIsPlaying(false);
                 Tone.getTransport().pause(); //pause the thing scheduling the notes
@@ -290,9 +328,7 @@ export function SynthContainer() {
               Pause
             </Button>
           ) : (
-            <Button
-              size="lg"
-              color="green"
+            <Button size="lg" color="green"
               onPointerDown={async () => {
                 setIsPlaying(true);
                 Tone.getTransport().start();
@@ -303,52 +339,25 @@ export function SynthContainer() {
           )}
 
           {isRecording ? (
-            <Button
-              size="lg"
-              color="#aa0022"
+            <Button size="lg" color="#aa0022"
               onPointerDown={async (e) => {
                 setisRecording(false); //turn recording mode off
               }}
             >
-              Recording On
+              REC
             </Button>
           ) : (
-            <Button
-              size="lg"
-              color="#000000"
+            <Button size="lg" color="#000000"
               onPointerDown={async (e) => {
                 setisRecording(true); //turn recording mode on
               }}
             >
-              Recording Off
+              REC
             </Button>
           )}
 
-          <Button
-            size="lg"
-            color="#000000"
-            onPointerDown={async () => {
-              setClearLoopWindow(true);
-            }}
-          >
-            Clear Loop
-          </Button>
-
-          {isClearLoopWindow ? (
-            <Button
-              size="lg"
-              color="#000000"
-              onPointerDown={async () => {
-                setClearLoopWindow(false);
-                seqData.current.length = 0; //clear all notes instantly. garbage collector will reclaim the memory later
-                synth.current?.triggerRelease(); //silence the currently playing synth
-              }}
-            >
-              Are You Sure?
-            </Button>
-          ) : (
-            <></>
-          )}
+          <Button size="lg" color="#000000"
+            onClick={openClearModal}>Clear Loop</Button>
 
           {/* render xy pad here */}
           <div className="piano-board">
