@@ -3,7 +3,8 @@ import { Button, getBreakpointValue } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import dynamic from "next/dynamic";
 import { PointerEvent, useEffect, useRef, useState } from "react";
-import { AudioContext, OfflineAudioContext } from "standardized-audio-context";
+// import { AudioContext, OfflineAudioContext } from "standardized-audio-context";
+import { BsFillRecordFill } from "react-icons/bs";
 import * as Tone from "tone";
 
 Tone.setContext(new Tone.Context({ latencyHint: "interactive" }));
@@ -47,6 +48,7 @@ export function SynthContainer() {
       </p>
     ),
     labels: { confirm: 'Confirm', cancel: 'Cancel' },
+    confirmProps: { color: 'red' },
     onCancel: () => console.log('Canceled clear loop'),
     onConfirm: async () => {
       seqData.current.length = 0; //clear all notes instantly. 
@@ -344,7 +346,7 @@ export function SynthContainer() {
                 setisRecording(false); //turn recording mode off
               }}
             >
-              REC
+              REC <BsFillRecordFill style={{ paddingLeft: 3 }} />
             </Button>
           ) : (
             <Button size="lg" color="#000000"
@@ -352,7 +354,7 @@ export function SynthContainer() {
                 setisRecording(true); //turn recording mode on
               }}
             >
-              REC
+              REC <BsFillRecordFill style={{ paddingLeft: 3 }} />
             </Button>
           )}
 
