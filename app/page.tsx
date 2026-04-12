@@ -1,7 +1,7 @@
 // import Link from 'next/link';
 // import { ColorSchemeToggle } from '../components/ColorSchemeToggle/ColorSchemeToggle';
 import { Box, Button, Grid, GridCol, Group } from "@mantine/core";
-import { IconExternalLink } from "@tabler/icons-react";
+import { BsBoxArrowUpRight } from "react-icons/bs";
 
 export default function HomePage() {
 	return (
@@ -56,7 +56,7 @@ export default function HomePage() {
 								color="dark"
 							>
 								Projects
-								<IconExternalLink style={{ paddingLeft: "2px" }} />
+								<BsBoxArrowUpRight style={{ padding: '3px', }} />
 							</Button>
 						</Group>
 					</GridCol>
@@ -120,7 +120,7 @@ export default function HomePage() {
 								</Button>
 								<Button size="md" component="a" href="/projects" color="dark">
 									Github
-									<IconExternalLink style={{ paddingLeft: "2px" }} />
+									<BsBoxArrowUpRight style={{ padding: '3px', }} />
 								</Button>
 								<Button
 									size="md"
@@ -185,7 +185,7 @@ export default function HomePage() {
 								</Button>
 								<Button size="md" component="a" href="/projects" color="dark">
 									Github
-									<IconExternalLink style={{ paddingLeft: "2px" }} />
+									<BsBoxArrowUpRight style={{ padding: '3px', }} />
 								</Button>
 								<Button
 									size="md"
@@ -288,7 +288,7 @@ export default function HomePage() {
 								</Button>
 								<Button size="md" component="a" href="/projects" color="dark">
 									Github
-									<IconExternalLink style={{ paddingLeft: "2px" }} />
+									<BsBoxArrowUpRight style={{ padding: '3px', }} />
 								</Button>
 								<Button
 									size="md"

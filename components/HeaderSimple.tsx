@@ -1,19 +1,13 @@
 "use client"; // This is a client component, renders in client.
 import {
-  AppShell,
-  Burger,
-  Button,
-  Container,
-  createTheme,
-  Group,
-  MantineProvider,
-  Menu,
-  Title,
+  AppShell, Burger, Button, Container, createTheme, Group, MantineProvider, Menu, Title,
 } from "@mantine/core";
 import { useDisclosure, useHeadroom } from "@mantine/hooks";
-import { IconArrowsLeftRight } from "@tabler/icons-react";
 import classes from "./HeaderSimple.module.css";
 import Link from "next/link";
+
+import { BsCartFill, BsCaretRightFill } from "react-icons/bs";
+import { useState } from "react";
 
 const links = [
   { link: "/", label: "Home" },
@@ -33,7 +27,7 @@ export function HeaderSimple() {
   // this initializes the headroom for navbar
   const pinned = useHeadroom({ fixedAt: 100 });
 
-  const [opened, { toggle }] = useDisclosure(false);
+  const [opened, setOpened] = useState(false);
 
   const items = links.map((link) => (
     <Link key={link.label} href={link.link} className={classes.link}>
@@ -85,11 +79,14 @@ export function HeaderSimple() {
                 shadow="md"
                 width={200}
                 transitionProps={{ transition: "rotate-right", duration: 150 }}
+                opened={opened}
+                onClose={() => setOpened(false)}
+                onOpen={() => setOpened(true)}
               >
                 <Menu.Target>
                   <Burger
                     opened={opened}
-                    onClick={toggle}
+                    onClick={() => setOpened(!opened)}
                     hiddenFrom="lg"
                     size="lg"
                     aria-label="Toggle navigation"
@@ -103,8 +100,8 @@ export function HeaderSimple() {
                   <Menu.Divider />
 
                   <Menu.Label>Projects</Menu.Label>
-                  <Menu.Item leftSection={<IconArrowsLeftRight size={14} />}>
-                    <Link href="/synth">Synth</Link>
+                  <Menu.Item leftSection={<BsCaretRightFill />}>
+                    <Link href="/synth" className={classes.link} key='synth'>Synth</Link>
                   </Menu.Item>
                   {/* <Menu.Item leftSection={<IconPhoto size={14} />}>
                     Database
