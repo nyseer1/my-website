@@ -13,6 +13,7 @@ import {
 import { useDisclosure, useHeadroom } from "@mantine/hooks";
 import { IconArrowsLeftRight } from "@tabler/icons-react";
 import classes from "./HeaderSimple.module.css";
+import Link from "next/link";
 
 const links = [
   { link: "/", label: "Home" },
@@ -35,9 +36,9 @@ export function HeaderSimple() {
   const [opened, { toggle }] = useDisclosure(false);
 
   const items = links.map((link) => (
-    <a key={link.label} href={link.link} className={classes.link}>
+    <Link key={link.label} href={link.link} className={classes.link}>
       {link.label}
-    </a>
+    </Link> //next.js Link for prefetching (preloads webpages linked here so that they can be rendered instantly when clicked later)
   ));
 
   return (
@@ -103,7 +104,7 @@ export function HeaderSimple() {
 
                   <Menu.Label>Projects</Menu.Label>
                   <Menu.Item leftSection={<IconArrowsLeftRight size={14} />}>
-                    <a href="/synth">Synth</a>
+                    <Link href="/synth">Synth</Link>
                   </Menu.Item>
                   {/* <Menu.Item leftSection={<IconPhoto size={14} />}>
                     Database

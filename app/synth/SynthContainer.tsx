@@ -361,6 +361,7 @@ export function SynthContainer() {
           <Button size="lg" color="#000000"
             onClick={openClearModal}>Clear Loop</Button>
 
+
           {/* render xy pad here */}
           <div className="piano-board">
             <div
