@@ -3,9 +3,10 @@ import { Button, getBreakpointValue } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import dynamic from "next/dynamic";
 import { PointerEvent, useEffect, useRef, useState } from "react";
-// import { AudioContext, OfflineAudioContext } from "standardized-audio-context";
+import { AudioContext, OfflineAudioContext } from "standardized-audio-context";
 import { BsFillRecordFill } from "react-icons/bs";
 import * as Tone from "tone";
+import FluidSimulation from '@/components/cursor/FluidSimulation.jsx';
 
 Tone.setContext(new Tone.Context({ latencyHint: "interactive" }));
 Tone.getContext().lookAhead = 0; // Removes the 100ms scheduling buffer
@@ -36,7 +37,7 @@ export function SynthContainer() {
   const filterEnv = useRef<Tone.FrequencyEnvelope | null>(null);
   const seq = useRef<Tone.Sequence | null>(null);
 
-  const [isRecording, setisRecording] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const [IsPlaying, setIsPlaying] = useState(true); //if transport is currently running
 
   //MODALS SECTION
@@ -71,6 +72,7 @@ export function SynthContainer() {
   useEffect(() => {
     //THIS section ONLY runs when component mounts(page first load)-----------------------
     //create a synth and connect it to the main output (your speakers)
+
     filter.current = new Tone.Filter(8000, "lowpass").toDestination();
 
     synth.current = new Tone.Synth({
@@ -167,6 +169,7 @@ export function SynthContainer() {
       filter.current?.dispose();
       filterEnv.current?.dispose();
       Tone.getTransport().stop(); //TODO might not need check later
+      // cursorEffect.destroy();
     };
   }, []);
 
@@ -343,7 +346,7 @@ export function SynthContainer() {
           {isRecording ? (
             <Button size="lg" color="#aa0022"
               onPointerDown={async (e) => {
-                setisRecording(false); //turn recording mode off
+                setIsRecording(false); //turn recording mode off
               }}
             >
               REC <BsFillRecordFill style={{ paddingLeft: 3 }} />
@@ -351,7 +354,7 @@ export function SynthContainer() {
           ) : (
             <Button size="lg" color="#000000"
               onPointerDown={async (e) => {
-                setisRecording(true); //turn recording mode on
+                setIsRecording(true); //turn recording mode on
               }}
             >
               REC <BsFillRecordFill style={{ paddingLeft: 3 }} />
@@ -364,6 +367,18 @@ export function SynthContainer() {
 
           {/* render xy pad here */}
           <div className="piano-board">
+                          <FluidSimulation
+                    splatRadius={0.001}
+                    cursorColorMode="random"
+                    containerRef={padRef}
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                    }}
+                    />
             <div
               ref={padRef}
               onPointerDown={handlePointerDown} //automatically calls the function on pointer down (when someone touches the pad) same for others
@@ -377,6 +392,7 @@ export function SynthContainer() {
               </p>
             </div>
           </div>
+
         </>
       ) : (
         //button to activate synth here

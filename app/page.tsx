@@ -26,7 +26,6 @@ export default function HomePage() {
 
 						<br />
 						<br />
-						<br />
 					</GridCol>
 					<GridCol span={{ base: 1, md: 5, lg: 5 }} />
 

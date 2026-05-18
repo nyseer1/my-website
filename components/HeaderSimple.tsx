@@ -2,11 +2,11 @@
 import {
   AppShell, Burger, Button, Container, createTheme, Group, MantineProvider, Menu, Title,
 } from "@mantine/core";
-import { useDisclosure, useHeadroom } from "@mantine/hooks";
+import { useHeadroom } from "@mantine/hooks";
 import classes from "./HeaderSimple.module.css";
 import Link from "next/link";
 
-import { BsCartFill, BsCaretRightFill } from "react-icons/bs";
+import { BsCaretRightFill } from "react-icons/bs";
 import { useState } from "react";
 
 const links = [
