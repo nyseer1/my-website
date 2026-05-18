@@ -368,7 +368,7 @@ export function SynthContainer() {
           {/* render xy pad here */}
           <div className="piano-board">
                           <FluidSimulation
-                    splatRadius={0.001}
+                    splatRadius={0.01}
                     cursorColorMode="random"
                     containerRef={padRef}
                     style={{
