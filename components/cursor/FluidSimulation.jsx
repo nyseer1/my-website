@@ -567,10 +567,10 @@
                 pointers[0].down = false;
             };
     
-            canvas.addEventListener("mousemove", handleMouseMove);
-            canvas.addEventListener("mousedown", handleMouseDown);
-            container.addEventListener("mousemove", handleMouseMove);
-            canvas.addEventListener("mouseup", handleMouseUp);
+            canvas.addEventListener("pointermove", handleMouseMove);
+            canvas.addEventListener("pointerdown", handleMouseDown);
+            container.addEventListener("pointermove", handleMouseMove);
+            canvas.addEventListener("pointerup", handleMouseUp);
             window.addEventListener("resize", resizeCanvas);
     
             update();
