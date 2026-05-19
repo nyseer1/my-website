@@ -6,7 +6,7 @@ import { PointerEvent, useEffect, useRef, useState } from "react";
 import { AudioContext, OfflineAudioContext } from "standardized-audio-context";
 import { BsFillRecordFill } from "react-icons/bs";
 import * as Tone from "tone";
-import FluidSimulation from '@/components/cursor/FluidSimulation.jsx';
+import CanvasCursor from '@/components/cursor/CanvasCursor.jsx';
 
 Tone.setContext(new Tone.Context({ latencyHint: "interactive" }));
 Tone.getContext().lookAhead = 0; // Removes the 100ms scheduling buffer
@@ -367,19 +367,9 @@ export function SynthContainer() {
 
           {/* render xy pad here */}
           <div className="piano-board">
-                          <FluidSimulation
-                    splatRadius={0.01}
-                    cursorColorMode="random"
-                    containerRef={padRef}
-                    style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                    }}
-                    />
+                          <CanvasCursor id='canvas' />
             <div
+              id="targetDiv"
               ref={padRef}
               onPointerDown={handlePointerDown} //automatically calls the function on pointer down (when someone touches the pad) same for others
               onPointerUp={handlePointerUp}

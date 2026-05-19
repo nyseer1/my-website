@@ -61,9 +61,9 @@ export function HeaderSimple() {
                     component="a"
                     href="/"
                   >
-                    <Title>
+                    <h2>
                       Nyseer<span style={{ color: "blue" }}>.</span>
-                    </Title>
+                    </h2>
                   </Button>
                 </MantineProvider>
               </Group>

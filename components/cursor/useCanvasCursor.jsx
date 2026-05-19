@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-const UseCanvasCursor = () => {
+const useCanvasCursor = () => {
   const ctxRef = useRef(null);
   const fRef = useRef(null);
   const linesRef = useRef([]);
@@ -161,7 +161,7 @@ const UseCanvasCursor = () => {
       window.removeEventListener("resize", resizeCanvas);
       window.removeEventListener("orientationchange", resizeCanvas);
     };
-  }, []);
+  }, [  E.trails]);
 };
 
-export default UseCanvasCursor;
+export default useCanvasCursor;

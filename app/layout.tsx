@@ -33,7 +33,7 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				<MantineProvider>
+				<MantineProvider defaultColorScheme="auto">
 					{/* header that is rendered client side so it can use hooks */}
 					<HeaderSimple />
 					{/* this is where all the pages get rendered */}
