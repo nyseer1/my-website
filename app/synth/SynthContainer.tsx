@@ -318,8 +318,6 @@ export function SynthContainer() {
               Tone.getTransport().stop();
               Tone.getTransport().start();
             }}>
-
-
             Stop
           </Button>
 
