@@ -1,5 +1,5 @@
 import "@mantine/core/styles.css";
-import { mantineHtmlProps } from "@mantine/core"; //If your application has server side rendering, add ColorSchemeScript to the <head /> of your application and spread mantineHtmlProps on the <html /> element to avoid seeing a hydration warning:
+import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core"; //If your application has server side rendering, add ColorSchemeScript to the <head /> of your application and spread mantineHtmlProps on the <html /> element to avoid seeing a hydration warning:
 import "./globals.css";
 import { MantineProvider } from "@mantine/core";
 import { ModalsProvider } from '@mantine/modals';
@@ -33,6 +33,7 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
+				<ColorSchemeScript defaultColorScheme="auto" />
 				<MantineProvider defaultColorScheme="auto">
 					{/* header that is rendered client side so it can use hooks */}
 					<HeaderSimple />

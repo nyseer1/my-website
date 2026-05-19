@@ -7,6 +7,7 @@ import { AudioContext, OfflineAudioContext } from "standardized-audio-context";
 import { BsFillRecordFill } from "react-icons/bs";
 import * as Tone from "tone";
 import CanvasCursor from '@/components/cursor/CanvasCursor.jsx';
+import FluidSimulation from '@/components/cursor/FluidSimulation.jsx';
 
 Tone.setContext(new Tone.Context({ latencyHint: "interactive" }));
 Tone.getContext().lookAhead = 0; // Removes the 100ms scheduling buffer
@@ -39,6 +40,7 @@ export function SynthContainer() {
 
   const [isRecording, setIsRecording] = useState(false);
   const [IsPlaying, setIsPlaying] = useState(true); //if transport is currently running
+  const [visual, setVisual] = useState('fluid');
 
   //MODALS SECTION
   const openClearModal = () => modals.openConfirmModal({
@@ -367,7 +369,22 @@ export function SynthContainer() {
 
           {/* render xy pad here */}
           <div className="piano-board">
-                          <CanvasCursor id='canvas' />
+                          {visual === 'fluid' ? ( 
+                                          <FluidSimulation
+                    splatRadius={0.02}
+                    cursorColorMode="random"
+                    containerRef={padRef}
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                    }}
+                    />
+                          ): (                             
+                            <CanvasCursor id='canvas' />
+                            )}
             <div
               id="targetDiv"
               ref={padRef}

@@ -9,6 +9,16 @@ const useCanvasCursor = () => {
     y: window.innerHeight / 2,
   });
   const animationFrameId = useRef(null);
+  const spinRef = useRef({
+    active: false,
+    angle: 0,
+    radius: 0,
+    centerX: 0,
+    centerY: 0,
+    speed: 0.05,
+    duration: 0,
+    maxDuration: 120, // frames (about 2 seconds at 60fps)
+  });
 
   const E = {
     friction: 0.5,
@@ -50,8 +60,25 @@ const useCanvasCursor = () => {
     update() {
       let spring = this.spring;
       let t = this.nodes[0];
-      t.vx += (posRef.current.x - t.x) * spring;
-      t.vy += (posRef.current.y - t.y) * spring;
+      
+      // Apply spinny effect if active
+      if (spinRef.current.active && spinRef.current.duration > 0) {
+        const spin = spinRef.current;
+        const angle = spin.angle + (spin.duration * spin.speed);
+        const targetX = spin.centerX + Math.cos(angle) * spin.radius;
+        const targetY = spin.centerY + Math.sin(angle) * spin.radius;
+        
+        t.vx += (targetX - t.x) * spring * 1.5;
+        t.vy += (targetY - t.y) * spring * 1.5;
+        spin.duration--;
+        
+        if (spin.duration <= 0) {
+          spin.active = false;
+        }
+      } else {
+        t.vx += (posRef.current.x - t.x) * spring;
+        t.vy += (posRef.current.y - t.y) * spring;
+      }
 
       for (let i = 0; i < this.nodes.length; i++) {
         t = this.nodes[i];
@@ -90,9 +117,27 @@ const useCanvasCursor = () => {
     }
   }
 
+  const startSpinnyEffect = (x, y) => {
+    spinRef.current.active = true;
+    spinRef.current.centerX = x;
+    spinRef.current.centerY = y;
+    spinRef.current.radius = 150;
+    spinRef.current.angle = 0;
+    spinRef.current.speed = 0.05;
+    spinRef.current.duration = spinRef.current.maxDuration;
+  };
+
   const onMouseMove = (e) => {
-    posRef.current.x = e.touches ? e.touches[0].pageX : e.clientX;
-    posRef.current.y = e.touches ? e.touches[0].pageY : e.clientY;
+    const x = e.touches ? e.touches[0].pageX : e.clientX;
+    const y = e.touches ? e.touches[0].pageY : e.clientY;
+    
+    // Check if this is a touch start event (single touch)
+    if (e.type === 'touchstart' && e.touches.length === 1) {
+      startSpinnyEffect(x, y);
+    }
+    
+    posRef.current.x = x;
+    posRef.current.y = y;
     e.preventDefault();
   };
 
@@ -161,7 +206,7 @@ const useCanvasCursor = () => {
       window.removeEventListener("resize", resizeCanvas);
       window.removeEventListener("orientationchange", resizeCanvas);
     };
-  }, [  E.trails]);
+  }, [E.trails]);
 };
 
 export default useCanvasCursor;
