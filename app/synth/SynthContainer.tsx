@@ -362,7 +362,6 @@ export function SynthContainer() {
               REC <BsFillRecordFill style={{ paddingLeft: 3 }} />
             </Button>
           )}
-
           <Button size="lg" color="#000000"
             onClick={openClearModal}>Clear Loop</Button>
 
@@ -374,7 +373,7 @@ export function SynthContainer() {
                     splatRadius={0.02}
                     cursorColorMode="random"
                     containerRef={padRef}
-                    handlePointerDown={handlePointerDown}
+                    // handlePointerDown={handlePointerDown}
                     style={{
                         position: 'absolute',
                         top: 0,
