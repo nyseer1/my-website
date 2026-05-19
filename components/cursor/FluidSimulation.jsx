@@ -447,9 +447,9 @@ export default function FluidSimulation({
             gl.uniform1i(splatProgram.uniforms.uTarget, density.read[2]);
             gl.uniform3f(
                 splatProgram.uniforms.color,
-                color[0] * 0.2,
-                color[1] * 0.35,
-                color[2] * 0.4,
+                color[0] * 0.7,
+                color[1] * 0.2,
+                color[2] * 0.1
             );
             blit(density.write[1]);
             density.swap();
@@ -519,7 +519,7 @@ export default function FluidSimulation({
                         pointer.dy,
                         pointer.color
                     );
-                    // pointer.moved = false;
+                    pointer.moved = false;
                 }
             }
 
@@ -532,7 +532,7 @@ export default function FluidSimulation({
         }
 
         const handleMouseMove = (e) => {
-                        console.log('canvas mouse down');
+            console.log('move');
             const rect = container.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
@@ -551,13 +551,26 @@ export default function FluidSimulation({
                     Math.random() + 0.2,
                 ];
             } else if (Array.isArray(cursorColorMode)) {
-                pointer.color = cursorColorMode; //TODO TRY USING A LOOP FOR THIS
+                pointer.color = cursorColorMode;
             }
         };
 
-        const handleMouseDown = () => {
-            console.log('canvas mouse down');
+        const handleMouseDown = (e) => {
+            console.log('down');
             pointers[0].down = true;
+
+            //added function to create a line for the animation to draw when tapping the screen:
+            //  - gets the xy values of the div its in
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            //  - changes the values
+            const pointer = pointers[0];
+            pointer.dx = (x - pointer.x) * 1.2 + 1000;
+            pointer.dy = (y - pointer.y) * 1.2 + 1000;
+            pointer.x = x - 100;
+            pointer.y = y - 100;
+            pointer.moved = true;
             pointers[0].color = [
                 Math.random() + 0.2,
                 Math.random() + 0.2,
@@ -566,7 +579,7 @@ export default function FluidSimulation({
         };
 
         const handleMouseUp = () => {
-            // pointers[0].down = false;
+            pointers[0].down = false;
         };
 
         canvas.addEventListener("mousemove", handleMouseMove);
@@ -596,7 +609,7 @@ export default function FluidSimulation({
                 ...style,
                 display: "block",
                 background: "transparent",
-                pointerEvents: "none",
+                pointerEvents: "none", //TODO need to set this to auto for pointerdown events to work, but then it overwrites the div's pointerdown events. so maybe if I call the handle mouse down method from here inside there it can work.
             }}
         />
     );

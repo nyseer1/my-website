@@ -369,11 +369,12 @@ export function SynthContainer() {
 
           {/* render xy pad here */}
           <div className="piano-board">
-                          {visual === 'fluid' ? ( 
+                          {visual === 'fuid' ? ( 
                                           <FluidSimulation
                     splatRadius={0.02}
                     cursorColorMode="random"
                     containerRef={padRef}
+                    handlePointerDown={handlePointerDown}
                     style={{
                         position: 'absolute',
                         top: 0,
