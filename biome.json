@@ -12,7 +12,7 @@
 		"enabled": true,
 		"indentStyle": "tab"
 	},
-	"linter": {
+	"linter": {	
 		"enabled": true,
 		"rules": {
 			"recommended": true

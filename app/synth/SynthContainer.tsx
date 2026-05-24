@@ -1,13 +1,13 @@
 "use client"; // Required for Web Audio API, (ensures the code runs on the client)
-import { Button, getBreakpointValue } from "@mantine/core";
+import { Button } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import dynamic from "next/dynamic";
-import { PointerEvent, useEffect, useRef, useState } from "react";
-import { AudioContext, OfflineAudioContext } from "standardized-audio-context";
+import { useEffect, useRef, useState } from "react";
+// import { AudioContext, OfflineAudioContext } from "standardized-audio-context";
 import { BsFillRecordFill } from "react-icons/bs";
 import * as Tone from "tone";
 import CanvasCursor from '@/components/cursor/CanvasCursor.jsx';
 import FluidSimulation from '@/components/cursor/FluidSimulation.jsx';
+
 
 Tone.setContext(new Tone.Context({ latencyHint: "interactive" }));
 Tone.getContext().lookAhead = 0; // Removes the 100ms scheduling buffer

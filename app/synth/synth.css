@@ -21,3 +21,7 @@
 Button {
   width: 100%;
 }
+
+canvas {
+  position: fixed;
+}
