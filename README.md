@@ -1,4 +1,4 @@
-# Nyseer Couse's Portfolio Website (Monorepo)
+# Nyseer Couse's Portfolio Website
 
 Here is where I showcase all my projects.
 Feel free to check them out!
