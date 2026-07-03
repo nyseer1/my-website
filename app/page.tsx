@@ -6,10 +6,13 @@ export default function HomePage() {
 		<>
 			<ul>
 				<li>
+					<a href="/" style={{backgroundColor:'black'}}>Nyseer</a>
+				</li>
+				<li>
 					<a href="default.asp">Home</a>
 				</li>
 				<li>
-					<a href="news.asp">News</a>
+					<a href="#projects">Projects</a>
 				</li>
 				<li>
 					<a href="contact.asp">Contact</a>
@@ -19,6 +22,10 @@ export default function HomePage() {
 				</li>
 			</ul>
 			test
+			<br style={{lineHeight:50}}/>
+			<div id="projects">
+				poop
+			</div>
 		</>
 	);
 }

@@ -1,80 +1,79 @@
-@import "tailwindcss";
-
 h1 {
-  font-size: 3em;
-  padding: 1em;
-  /* Example font size (adjust as needed) */
-  text-align: center;
+	font-size: 3em;
+	padding: 1em;
+	/* Example font size (adjust as needed) */
+	text-align: center;
 }
 
 h2 {
-  font-size: 2.2em;
-  padding: 1em;
-  /* Example font size (adjust as needed) */
+	font-size: 2.2em;
+	padding: 1em;
+	/* Example font size (adjust as needed) */
 }
 
 h3 {
-  padding: 1em;
-  /* Example font size (adjust as needed) */
+	padding: 1em;
+	/* Example font size (adjust as needed) */
 }
 
 html {
-  scroll-behavior: smooth;
+	scroll-behavior: smooth;
 }
 
 p {
-  font-size: 1em;
-  padding: 1em;
-  /* Example font size (adjust as needed) */
-
+	font-size: 1em;
+	padding: 1em;
+	/* Example font size (adjust as needed) */
 }
 
 h4 {
-  text-align: center;
-  font-size: 2em;
+	text-align: center;
+	font-size: 2em;
 }
 
 .bar {
-  background-color: lightseagreen;
+	background-color: lightseagreen;
 }
 
 #project-section {
-  background-color: black;
-  color: white;
-
+	background-color: black;
+	color: white;
 }
 
 #project-section-alt {
-
 }
 
 #contact-section {
-  
 }
 
 /* navbar */
- ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #111111;
+ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #111111;
 }
 
 ul li {
-  float: left;
+	float: left;
 }
 
 ul li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
 }
 
 ul li a:hover {
-  background-color: #333333;
+	background-color: #333333;
 }
 
-html {background-color: black;}
+html {
+	background-color: black;
+	scroll-behavior: smooth;
+	color: white;
+	font-family: "Lucida Console", "Courier New", monospace;
+}
