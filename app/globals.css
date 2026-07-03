@@ -1,40 +1,3 @@
-h1 {
-	font-size: 3em;
-	padding: 1em;
-	/* Example font size (adjust as needed) */
-	text-align: center;
-}
-
-h2 {
-	font-size: 2.2em;
-	padding: 1em;
-	/* Example font size (adjust as needed) */
-}
-
-h3 {
-	padding: 1em;
-	/* Example font size (adjust as needed) */
-}
-
-html {
-	scroll-behavior: smooth;
-}
-
-p {
-	font-size: 1em;
-	padding: 1em;
-	/* Example font size (adjust as needed) */
-}
-
-h4 {
-	text-align: center;
-	font-size: 2em;
-}
-
-.bar {
-	background-color: lightseagreen;
-}
-
 #project-section {
 	background-color: black;
 	color: white;
@@ -53,27 +16,63 @@ ul {
 	padding: 0;
 	overflow: hidden;
 	background-color: #111111;
+	display: flex;
+	flex-direction: row;
 }
-
-ul li {
-	float: left;
-}
-
 ul li a {
 	display: block;
 	color: white;
 	text-align: center;
 	padding: 14px 16px;
 	text-decoration: none;
+	font-size: 20;
+	/* width: 100%; */
 }
-
 ul li a:hover {
 	background-color: #333333;
 }
 
+/* Make a one column-layout instead of three-column layout */
+@media (max-width: 600px) {
+	ul {
+		flex-direction: column;
+	}
+}
+
+/* theme */
 html {
 	background-color: black;
 	scroll-behavior: smooth;
 	color: white;
 	font-family: "Lucida Console", "Courier New", monospace;
 }
+
+/* old might use later */
+/* h1 {
+	font-size: 3em;
+	padding: 1em;
+	text-align: center;
+}
+
+h2 {
+	font-size: 2.2em;
+	padding: 1em;
+}
+
+h3 {
+	padding: 1em;
+}
+
+p {
+	font-size: 1em;
+	padding: 1em;
+}
+
+h4 {
+	text-align: center;
+	font-size: 2em;
+} */
+
+/* .bar {
+	background-color: lightseagreen;
+} */

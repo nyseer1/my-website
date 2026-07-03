@@ -9,17 +9,18 @@ export default function HomePage() {
 					<a href="/" style={{backgroundColor:'black'}}>Nyseer</a>
 				</li>
 				<li>
-					<a href="default.asp">Home</a>
+					<a href="/">Home</a>
+				</li>
+				<li>zn
+					<a href="/about" >About Me</a>
 				</li>
 				<li>
 					<a href="#projects">Projects</a>
 				</li>
 				<li>
-					<a href="contact.asp">Contact</a>
+					<a href="contact.asp">Contact Me</a>
 				</li>
-				<li>
-					<a href="about.asp">About</a>
-				</li>
+				
 			</ul>
 			test
 			<br style={{lineHeight:50}}/>
