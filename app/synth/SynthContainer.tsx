@@ -1,18 +1,17 @@
 "use client"; // Required for Web Audio API, (ensures the code runs on the client)
-import { Button } from "@mantine/core";
-import { modals } from "@mantine/modals";
 import { useEffect, useRef, useState } from "react";
 // import { AudioContext, OfflineAudioContext } from "standardized-audio-context";
-import { BsFillRecordFill } from "react-icons/bs";
 import * as Tone from "tone";
 import CanvasCursor from '@/components/cursor/CanvasCursor.jsx';
 import FluidSimulation from '@/components/cursor/FluidSimulation.jsx';
 
-
 Tone.setContext(new Tone.Context({ latencyHint: "interactive" }));
 Tone.getContext().lookAhead = 0; // Removes the 100ms scheduling buffer
 
+
+
 export function SynthContainer() {
+
   const [showSynth, setShowSynth] = useState(false);
 
   // We store the INDEX (0-3) in state
@@ -43,22 +42,22 @@ export function SynthContainer() {
   const [visual, setVisual] = useState('fluid');
 
   //MODALS SECTION
-  const openClearModal = () => modals.openConfirmModal({
-    title: 'Are you sure you would like to delete the loop?',
-    children: (
-      <p >
-        This action cannot be undone!
-      </p>
-    ),
-    labels: { confirm: 'Confirm', cancel: 'Cancel' },
-    confirmProps: { color: 'red' },
-    onCancel: () => console.log('Canceled clear loop'),
-    onConfirm: async () => {
-      seqData.current.length = 0; //clear all notes instantly. 
-      synth.current?.triggerRelease(); //silence the currently playing synth\
-      console.log('Confirmed clear loop');
-    },
-  });
+  // const openClearModal = () => modals.openConfirmModal({
+  //   title: 'Are you sure you would like to delete the loop?',
+  //   children: (
+  //     <p >
+  //       This action cannot be undone!
+  //     </p>
+  //   ),
+  //   labels: { confirm: 'Confirm', cancel: 'Cancel' },
+  //   confirmProps: { color: 'red' },
+  //   onCancel: () => console.log('Canceled clear loop'),
+  //   onConfirm: async () => {
+  //     seqData.current.length = 0; //clear all notes instantly. 
+  //     synth.current?.triggerRelease(); //silence the currently playing synth\
+  //     console.log('Confirmed clear loop');
+  //   },
+  // });
 
   //REFS
   const isButtonHeld = useRef(false); //for playing notes while playing a recording
@@ -312,17 +311,17 @@ export function SynthContainer() {
       {showSynth ? (
         <>
           {/* sequencer buttons */}
-          <Button size="lg" color="#333333"
+          <button
             onPointerDown={async () => {
               synth.current?.triggerRelease();
               Tone.getTransport().stop();
               Tone.getTransport().start();
             }}>
             Stop
-          </Button>
+          </button>
 
           {IsPlaying ? (
-            <Button size="lg" color="green"
+            <button
               onPointerDown={async () => {
                 setIsPlaying(false);
                 Tone.getTransport().pause(); //pause the thing scheduling the notes
@@ -331,37 +330,37 @@ export function SynthContainer() {
               }}
             >
               Pause
-            </Button>
+            </button>
           ) : (
-            <Button size="lg" color="green"
+            <button
               onPointerDown={async () => {
                 setIsPlaying(true);
                 Tone.getTransport().start();
               }}
             >
               Play
-            </Button>
+            </button>
           )}
 
           {isRecording ? (
-            <Button size="lg" color="#aa0022"
+            <button
               onPointerDown={async (e) => {
                 setIsRecording(false); //turn recording mode off
               }}
             >
               REC <BsFillRecordFill style={{ paddingLeft: 3 }} />
-            </Button>
+            </button>
           ) : (
-            <Button size="lg" color="#000000"
+            <button 
               onPointerDown={async (e) => {
                 setIsRecording(true); //turn recording mode on
               }}
             >
               REC <BsFillRecordFill style={{ paddingLeft: 3 }} />
-            </Button>
+            </button>
           )}
-          <Button size="lg" color="#000000"
-            onClick={openClearModal}>Clear Loop</Button>
+          <button
+            onClick={openClearModal}>Clear Loop</button>
 
 
           {/* render xy pad here */}
@@ -401,13 +400,13 @@ export function SynthContainer() {
         </>
       ) : (
         //button to activate synth here
-        <Button
+        <button
           onPointerDown={async (e) => {
             handleStartAudio(); //handles asynchronous api call to web audio api
           }}
         >
           Start Synth
-        </Button>
+        </button>
       )}
     </>
   );
