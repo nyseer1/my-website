@@ -1,5 +1,5 @@
 {
-	"name": "simple-db-project",
+	"name": "Nyseer's-Website",
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
@@ -22,10 +22,6 @@
 		"@types/node": "^20",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
-		"postcss": "^8.5.8",
-		"postcss-cli": "^11.0.1",
-		"postcss-preset-mantine": "^1.18.0",
-		"tailwindcss": "^4",
 		"typescript": "^5.9.3"
 	}
 }
