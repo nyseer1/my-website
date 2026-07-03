@@ -1,22 +1,23 @@
+import Link from 'next/link'; //<a> but allows for prefetching of specified links
 export default function Navbar() {
 	return (
 		<ul>
 			<li>
-				<a href="/" style={{ backgroundColor: "black" }}>
+				<Link href="/" style={{ backgroundColor: "black" }}>
 					Nyseer
-				</a>
+				</Link>
 			</li>
 			<li>
-				<a href="/">Home</a>
+				<Link href="/">Home</Link>
 			</li>
 			<li>
-				<a href="/about">About Me</a>
+				<Link href="/about">About Me</Link>
 			</li>
 			<li>
-				<a href="#projects">Projects</a>
+				<Link href="#projects">Projects</Link>
 			</li>
 			<li>
-				<a href="contact.asp">Contact Me</a>
+				<Link href="contact.asp">Contact Me</Link>
 			</li>
 		</ul>
 	);

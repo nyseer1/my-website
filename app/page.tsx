@@ -1,5 +1,3 @@
-// import Link v>
-// import { ColorSchemeToggle } from '../components/ColorSchemeToggle/ColorSchemeToggle';
 import Navbar from "./Navbar";
 export default function HomePage() {
 	return (
