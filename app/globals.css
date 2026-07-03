@@ -39,7 +39,7 @@ ul li a:hover {
 	}
 }
 
-/* theme */
+/* basically the theme */
 html {
 	background-color: black;
 	scroll-behavior: smooth;
@@ -48,12 +48,12 @@ html {
 }
 
 /* old might use later */
-/* h1 {
-	font-size: 3em;
+ h1 {
 	padding: 1em;
 	text-align: center;
 }
 
+/*
 h2 {
 	font-size: 2.2em;
 	padding: 1em;

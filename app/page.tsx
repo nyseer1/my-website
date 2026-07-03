@@ -11,7 +11,7 @@ export default function HomePage() {
 				<li>
 					<a href="/">Home</a>
 				</li>
-				<li>zn
+				<li>
 					<a href="/about" >About Me</a>
 				</li>
 				<li>
@@ -25,7 +25,7 @@ export default function HomePage() {
 			test
 			<br style={{lineHeight:50}}/>
 			<div id="projects">
-				poop
+				<h1>Featured Projects:</h1>
 			</div>
 		</>
 	);

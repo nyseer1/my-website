@@ -2,13 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 // import { AudioContext, OfflineAudioContext } from "standardized-audio-context";
 import * as Tone from "tone";
-import CanvasCursor from '@/components/cursor/CanvasCursor.jsx';
-import FluidSimulation from '@/components/cursor/FluidSimulation.jsx';
-
 Tone.setContext(new Tone.Context({ latencyHint: "interactive" }));
 Tone.getContext().lookAhead = 0; // Removes the 100ms scheduling buffer
-
-
 
 export function SynthContainer() {
 
@@ -311,7 +306,7 @@ export function SynthContainer() {
       {showSynth ? (
         <>
           {/* sequencer buttons */}
-          <button
+          <button type="button"
             onPointerDown={async () => {
               synth.current?.triggerRelease();
               Tone.getTransport().stop();
@@ -321,7 +316,7 @@ export function SynthContainer() {
           </button>
 
           {IsPlaying ? (
-            <button
+            <button type="button"
               onPointerDown={async () => {
                 setIsPlaying(false);
                 Tone.getTransport().pause(); //pause the thing scheduling the notes
@@ -332,7 +327,7 @@ export function SynthContainer() {
               Pause
             </button>
           ) : (
-            <button
+            <button type="button"
               onPointerDown={async () => {
                 setIsPlaying(true);
                 Tone.getTransport().start();
@@ -343,44 +338,33 @@ export function SynthContainer() {
           )}
 
           {isRecording ? (
-            <button
+            <button type="button"
               onPointerDown={async (e) => {
                 setIsRecording(false); //turn recording mode off
               }}
             >
-              REC <BsFillRecordFill style={{ paddingLeft: 3 }} />
+              REC
             </button>
           ) : (
-            <button 
+            <button type="button" 
               onPointerDown={async (e) => {
                 setIsRecording(true); //turn recording mode on
               }}
             >
-              REC <BsFillRecordFill style={{ paddingLeft: 3 }} />
+              REC 
             </button>
           )}
-          <button
-            onClick={openClearModal}>Clear Loop</button>
+          {/* open modal here */}
+          <button type="button"
+            onClick={console.log}>Clear Loop</button> 
 
 
           {/* render xy pad here */}
           <div className="piano-board">
                           {visual === 'fuid' ? ( 
-                                          <FluidSimulation
-                    splatRadius={0.02}
-                    cursorColorMode="random"
-                    containerRef={padRef}
-                    // handlePointerDown={handlePointerDown}
-                    style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                    }}
-                    />
+                                          <span>cursor goes here</span>
                           ): (                             
-                            <CanvasCursor id='canvas' />
+                            <span>cursor goes here</span>
                             )}
             <div
               id="targetDiv"
@@ -400,7 +384,7 @@ export function SynthContainer() {
         </>
       ) : (
         //button to activate synth here
-        <button
+        <button type="button"
           onPointerDown={async (e) => {
             handleStartAudio(); //handles asynchronous api call to web audio api
           }}
