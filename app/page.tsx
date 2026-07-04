@@ -8,6 +8,7 @@ export default function HomePage() {
 			<div id="projects">
 				<h1>Featured Projects:</h1>
 			</div>
+			poo
 		</>
 	);
 }

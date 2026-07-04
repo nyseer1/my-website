@@ -7,18 +7,22 @@ export default function Navbar() {
 					Nyseer
 				</Link>
 			</li>
-			<li>
+			<li className='navbarItems'>
 				<Link href="/">Home</Link>
 			</li>
-			<li>
+			<li className='navbarItems'>
 				<Link href="/about">About Me</Link>
 			</li>
-			<li>
+			<li className='navbarItems'>
 				<Link href="#projects">Projects</Link>
 			</li>
-			<li>
+			<li className='navbarItems'>
 				<Link href="contact.asp">Contact Me</Link>
 			</li>
+			<li className='icon'>
+				<Link href="contact.asp">MenuIcon</Link>
+			</li>
+			
 		</ul>
 	);
 }
