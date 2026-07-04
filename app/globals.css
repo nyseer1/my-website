@@ -4,9 +4,10 @@ ul {
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
-	background-color: #111111;
+	background-color: #000000;
 	display: flex;
 	flex-direction: row;
+	/* padding-left: 20%; */
 }
 ul li a {
 	display: block;
@@ -14,8 +15,15 @@ ul li a {
 	text-align: center;
 	padding: 14px 16px;
 	text-decoration: none;
-	font-size: 16;
+	font-size: 18;
+	background-color: #111111;
+
 	/* width: 100%; */
+}
+
+ul li .hamburger {
+	color: white;
+	background-color: #111111;
 }
 ul .icon { 
 	display:none;
@@ -30,6 +38,7 @@ ul li a:hover {
 @media (max-width: 600px) {
 	ul {
 		flex-direction: column;
+		/* padding-left: 0%; */
 	}
 	/* hide list except home and icon */
 	
@@ -42,6 +51,12 @@ ul li a:hover {
   }
 	
 }
+
+/* @media (max-width: 1000px) {
+	ul {
+		padding-left: 0%;
+	}
+} */
 
 /* basically the theme */
 html {

@@ -3,12 +3,12 @@ export default function HomePage() {
 	return (
 		<>
 			<Navbar/>
-			test
+			{/* test */}
 			<br style={{lineHeight:50}}/>
 			<div id="projects">
 				<h1>Featured Projects:</h1>
 			</div>
-			poo
+			{/* poo */}
 		</>
 	);
 }
