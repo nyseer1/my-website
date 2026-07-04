@@ -1,16 +1,43 @@
 "use client";
+import Link from "next/link";
 import "@/app/components/hamburgers.css";
-import '@/app/components/Modal.css';
-import { useState } from "react";
+import "@/app/components/Modal.css";
+import { useState, useEffect, useRef } from "react";
 export default function Hamburger() {
 	const [isActive, setIsActive] = useState(false);
 
-	function handlePointerDown() {
+	function handleOpenHamburger(e) {
 		setIsActive(!isActive);
+		//open modal
+		handleOpenModal();
+	}
+	function handleOpenModal() {
+		modal.current.style.display = "block";
 	}
 	function handleCloseModal() {
-		document.getElementById("id01").style.display = "none";
+		modal.current.style.display = "none";
+		setIsActive(!isActive);
 	}
+
+	const modal = useRef(null);
+
+	useEffect(() => {
+		modal.current = document.getElementById("navbarModal");
+		window.addEventListener("click", (e) => {
+			if (e.target === modal.current) {
+				modal.current.style.display = "none";
+				setIsActive(!isActive);
+			}
+		});
+		return () => {
+			window.removeEventListener("click", (e) => {
+				if (e.target === modal.current) {
+					modal.current.style.display = "none";
+					setIsActive(!isActive);
+				}
+			});
+		};
+	});
 
 	return (
 		<>
@@ -21,35 +48,40 @@ export default function Hamburger() {
 						: "hamburger hamburger--emphatic"
 				}
 				type="button"
-				onPointerDown={handlePointerDown}
+				onPointerDown={(e) => handleOpenHamburger(e)}
 			>
 				<span className="hamburger-box">
 					<span className="hamburger-inner"></span>
 				</span>
 			</button>
 
-			<div id="id01" className="modal">
-				<button
-					type="button"
-					onPointerDown={handleCloseModal}
-					className="close"
-					title="Close Modal"
-				></button>
-				<form className="modal-content" action="/action_page.php">
-					<div className="container">
-						<h1>Delete Account</h1>
-						<p>Are you sure you want to delete your account?</p>
-
-						<div className="clearfix">
-							<button type="button" className="cancelbtn">
-								Cancel
+			<div id="navbarModal" className="modal">
+				<div className="modal-content">
+					<p>Where do you want to go?!</p>
+					<ul>
+						<li className="hamburgerItems">
+							<Link href="/">Home</Link>
+						</li>
+						<li className="hamburgerItems">
+							<Link href="/about">About Me</Link>
+						</li>
+						<li className="hamburgerItems">
+							<Link href="#projects">Projects</Link>
+						</li>
+						<li className="hamburgerItems">
+							<Link href="contact.asp">Contact Me</Link>
+						</li>
+						<li className="hamburgerItems">
+							<button
+								type="button"
+								className="close"
+								onPointerDown={handleCloseModal}
+							>
+								Back
 							</button>
-							<button type="button" className="deletebtn">
-								Delete
-							</button>
-						</div>
-					</div>
-				</form>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</>
 	);

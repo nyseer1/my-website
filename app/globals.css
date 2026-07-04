@@ -67,6 +67,11 @@ html {
 }
 
 h1 {
+	padding: 2em;
+	text-align: center;
+	/* font-size: 2em; */
+}
+h3 {
 	padding: 1em;
 	text-align: center;
 	/* font-size: 2em; */
