@@ -6,36 +6,28 @@ import { useState, useEffect, useRef } from "react";
 export default function Hamburger() {
 	const [isActive, setIsActive] = useState(false);
 
-	function handleOpenHamburger(e) {
-		setIsActive(!isActive);
+	function handleOpenHamburger() {
+		setIsActive(true);
 		//open modal
-		handleOpenModal();
-	}
-	function handleOpenModal() {
 		modal.current.style.display = "block";
 	}
-	function handleCloseModal() {
+		function handleCloseModal() {
 		modal.current.style.display = "none";
-		setIsActive(!isActive);
+		setIsActive(false);
+	}
+	function handleClickOutside(e) {
+		if (e.target === modal.current) {
+			handleCloseModal();
+		}
 	}
 
 	const modal = useRef(null);
 
 	useEffect(() => {
 		modal.current = document.getElementById("navbarModal");
-		window.addEventListener("click", (e) => {
-			if (e.target === modal.current) {
-				modal.current.style.display = "none";
-				setIsActive(!isActive);
-			}
-		});
+		window.addEventListener("click", handleClickOutside);
 		return () => {
-			window.removeEventListener("click", (e) => {
-				if (e.target === modal.current) {
-					modal.current.style.display = "none";
-					setIsActive(!isActive);
-				}
-			});
+			window.removeEventListener("click", handleClickOutside);
 		};
 	});
 
@@ -48,7 +40,7 @@ export default function Hamburger() {
 						: "hamburger hamburger--emphatic"
 				}
 				type="button"
-				onPointerDown={(e) => handleOpenHamburger(e)}
+				onPointerDown={handleOpenHamburger}
 			>
 				<span className="hamburger-box">
 					<span className="hamburger-inner"></span>
