@@ -61,18 +61,18 @@ export default function Hamburger() {
 							</Link>
 						</li>
 						<li className="hamburgerItems">
-							<Link href="#about" className="link">
+							<Link href="/#about" className="link">
 								About Me
 							</Link>
 						</li>
 						<li className="hamburgerItems">
 							{/* todo this isnt doing both */}
-							<Link href="#projects" className="link">
+							<Link href="/#projects" className="link">
 								Projects
 							</Link>
 						</li>
 						<li className="hamburgerItems">
-							<Link href="#contact" className="link">
+							<Link href="/#contact" className="link">
 								Contact Me
 							</Link>
 						</li>
