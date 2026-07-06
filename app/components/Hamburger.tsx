@@ -79,7 +79,7 @@ export default function Hamburger() {
 						<li className="hamburgerItems">
 							<button
 								type="button"
-								className="close"
+								className="button"
 								onPointerDown={handleCloseModal}
 							>
 								Back
