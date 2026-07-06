@@ -12,7 +12,7 @@ export default function Navbar() {
 				<Link href="/">Home</Link>
 			</li>
 			<li className="navbarItems">
-				<Link href="/about">About Me</Link>
+				<Link href="#about">About Me</Link>
 			</li>
 			<li className="navbarItems">
 				<Link href="#projects">Projects</Link>

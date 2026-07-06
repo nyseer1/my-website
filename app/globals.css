@@ -25,8 +25,8 @@ ul li .hamburger {
 	color: white;
 	background-color: #111111;
 }
-ul .icon { 
-	display:none;
+ul .icon {
+	display: none;
 	float: right;
 }
 
@@ -41,15 +41,14 @@ ul li a:hover {
 		/* padding-left: 0%; */
 	}
 	/* hide list except home and icon */
-	
+
 	ul .navbarItems {
 		display: none;
 	}
 	ul .icon {
-    float: right;
-    display: block;
-  }
-	
+		float: right;
+		display: block;
+	}
 }
 
 /* @media (max-width: 1000px) {
@@ -75,6 +74,17 @@ h3 {
 	padding: 1em;
 	text-align: center;
 	/* font-size: 2em; */
+}
+p {
+	padding-left: 10%;
+	padding-right: 10%;
+
+}
+#contact {
+	font-size: 1.5rem;
+	padding-left: 20%;
+	padding-right: 20%;
+
 }
 
 /* 
