@@ -18,7 +18,7 @@ export default function Navbar() {
 				<Link href="#projects">Projects</Link>
 			</li>
 			<li className="navbarItems">
-				<Link href="contact.asp">Contact Me</Link>
+				<Link href="#contact">Contact Me</Link>
 			</li>
 			<li className="icon">
 				<Hamburger/>

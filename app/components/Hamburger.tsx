@@ -56,12 +56,12 @@ export default function Hamburger() {
 					<p>Where do you want to go..</p>
 					<ul>
 						<li className="hamburgerItems">
-							<Link href="#home" className="link">
+							<Link href="/" className="link">
 								Home
 							</Link>
 						</li>
 						<li className="hamburgerItems">
-							<Link href="/about" className="link">
+							<Link href="#about" className="link">
 								About Me
 							</Link>
 						</li>
@@ -72,7 +72,7 @@ export default function Hamburger() {
 							</Link>
 						</li>
 						<li className="hamburgerItems">
-							<Link href="contact.asp" className="link">
+							<Link href="#contact" className="link">
 								Contact Me
 							</Link>
 						</li>

@@ -26,9 +26,11 @@ export default function HomePage() {
 			<div id="contact">
 				{/* test */}
 				<h1>Contact</h1>
-				<p id="contact">
-					<b>Phone:</b> (347)-579-9610<br/>
-					<b>Email:</b> nyseeer.couse@gmail.com<br/>
+				<p id="contact-p">
+					<b>Phone:</b> <a href="tel:+1-347-579-9610">(347)-579-9610</a><br/>
+					<b>Email:</b> <a href="mailto:nyseer.couse@gmail.com" aria-label="nyseer.couse@gmail.com"
+         >nyseer.couse@gmail.com</a>
+					<br/>
 				</p>
 				<br style={{ lineHeight: 10 }} />
 			</div>
