@@ -13,8 +13,8 @@ export default function HomePage() {
 		return () => window.removeEventListener("resize", updateMedia);
 	});
 	return (
-		<>
-			<div id="home">
+		<div className="adaptive">
+			<div id="home" className="adaptive">
 				<Navbar />
 				{/* test */}
 				{isDesktop ? (
@@ -58,6 +58,6 @@ export default function HomePage() {
 				<br style={{ lineHeight: 10 }} />
 			</div>
 			{/* poo */}
-		</>
+		</div>
 	);
 }

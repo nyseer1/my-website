@@ -28,12 +28,15 @@ ul li .hamburger {
 	background-color: #111111;
 }
 ul .icon {
-	width:100%;
+	width: 100%;
 	display: none;
 }
 
 ul li a:hover {
 	background-color: #333333;
+}
+.logo {
+	background-color: #111111;
 }
 
 /* Make a one column-layout instead of three-column layout */
@@ -70,7 +73,29 @@ html {
 	color: white;
 	font-family: "Lucida Console", "Courier New", monospace;
 }
+/* auto light mode if client(user) requests light mode */
+@media (prefers-color-scheme: light) {
+	html {
+		background-color: rgba(247, 244, 235);
+		color: rgb(157, 151, 194);
+	}
+	ul li a {
+		background-color: rgba(247, 244, 235);
+		outline-color: aquamarine;
+		color: rgb(157, 151, 194);
+	}
+	ul li a:hover {
+		background-color: rgba(255, 254, 255);
+		color: rgb(157, 151, 194);
+		outline-color: rgb(157, 151, 194);
+	}
+	.logo {
+		background-color: rgba(247, 244, 235);
+		color: rgb(157, 151, 194);
+	}
+}
 
+/* header and body */
 h1 {
 	padding: 2em;
 	text-align: center;
@@ -85,7 +110,6 @@ p {
 	padding-left: 10%;
 	padding-right: 10%;
 }
-
 #contact-p {
 	/* text-align: center; */
 	font-size: 1.5rem;
@@ -94,7 +118,6 @@ p {
 	/* padding-left: 35%; */
 	/* padding-right: 20%; */
 }
-
 @media (max-width: 600px) {
 	#contact-p {
 		/* text-align: center; */

@@ -1,5 +1,6 @@
 import Link from "next/link"; //<a> but allows for prefetching of specified links
 import Hamburger from "./Hamburger";
+import '@/app/globals.css';
 export default function Navbar() {
 
 	//hide on screen drag (optional)
@@ -15,9 +16,9 @@ export default function Navbar() {
 	// };
 
 	return (
-		<ul id="navbar">
+		<ul id="navbar" className="adaptive">
 			<li>
-				<Link href="/" style={{ backgroundColor: "black" }}>
+				<Link href="/" className="logo">
 					Nyseer
 				</Link>
 			</li>
