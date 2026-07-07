@@ -18,25 +18,30 @@ ul li a {
 	padding: 14px 16px;
 	text-decoration: none;
 	font-size: 18;
-	background-color: #111111;
+	background-color: #111;
 
 	/* width: 100%; */
 }
 
 ul li .hamburger {
 	color: white;
-	background-color: #111111;
+	background-color: #111;
 }
+ul li .hamburger:hover {
+	color: white;
+	background-color: #333;
+}
+
 ul .icon {
 	width: 100%;
 	display: none;
 }
 
 ul li a:hover {
-	background-color: #333333;
+	background-color: #333;
 }
 .logo {
-	background-color: #111111;
+	background-color: #111;
 }
 
 /* Make a one column-layout instead of three-column layout */
@@ -77,17 +82,22 @@ html {
 @media (prefers-color-scheme: light) {
 	html {
 		background-color: rgba(247, 244, 235);
-		color: rgb(157, 151, 194);
+		color: rgb(147, 141, 194);
 	}
+	/* todo put an outline here */
 	ul li a {
 		background-color: rgba(247, 244, 235);
 		outline-color: aquamarine;
-		color: rgb(157, 151, 194);
+		color: rgb(147, 141, 194);
 	}
 	ul li a:hover {
 		background-color: rgba(255, 254, 255);
 		color: rgb(157, 151, 194);
 		outline-color: rgb(157, 151, 194);
+	}
+	ul li .hamburger {
+		background-color: rgba(255, 254, 255);
+		color: rgb(147, 141, 194);
 	}
 	.logo {
 		background-color: rgba(247, 244, 235);
