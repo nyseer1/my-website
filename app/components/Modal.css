@@ -8,16 +8,15 @@ button {
 	width: 100%;
 	background-color: #111;
 	color: white;
-	padding: 0;
 	border: none;
 	height: 3rem;
-  font-size: 1rem;
+  	font-size: 1rem;
+	position:relative;
 }
 button:hover {
 	width: 100%;
 	background-color: #333;
 	color: white;
-	padding: 0;
 	border: none;
 }
 
