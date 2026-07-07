@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 export default function HomePage() {
@@ -38,6 +38,13 @@ export default function HomePage() {
 					interfaces, RESTful applications, and deploying production-ready
 					projects.
 				</p>
+				<h2>Skills:</h2>
+				<p id="">
+					<b>Soft Skills:</b> Problem-Solving, Teamworking, Organization,
+					Communication, Time Management, Critical Thinking<br/>
+					<b>Languages:</b> JavaScript (ES6+), TypeScript, Java, Python, SQL, HTML5, CSS3, C++<br/>
+					<b>Frontend:</b> React.js, Next.js, Responsive Web Design, HTML5, CSS3, State Management, Web APIs
+				</p>
 				<br style={{ lineHeight: 1 }} />
 			</div>
 			<div id="contact">
@@ -55,6 +62,7 @@ export default function HomePage() {
 					</a>
 					<br />
 				</p>
+				{/* todo add back to top button here */}
 				<br style={{ lineHeight: 10 }} />
 			</div>
 			{/* poo */}

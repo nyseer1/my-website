@@ -36,6 +36,7 @@ export default function Hamburger() {
 
 	return (
 		<>
+		{/* todo make this change colors in light mode */}
 			<button
 				className={
 					isActive

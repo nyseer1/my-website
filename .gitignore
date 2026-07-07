@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Turbopack cache
+[next]_*
+turbopack-*
+node_modules_*
+*.map

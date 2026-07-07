@@ -73,9 +73,10 @@ ul li a:hover {
 
 /* basically the theme */
 html {
-	background-color: black;
+	background-color: #000010;
 	scroll-behavior: smooth;
-	color: white;
+	color: #eee;
+	overflow-wrap: break-word;
 	font-family: "Lucida Console", "Courier New", monospace;
 }
 /* auto light mode if client(user) requests light mode */
@@ -108,6 +109,11 @@ html {
 /* header and body */
 h1 {
 	padding: 2em;
+	text-align: center;
+	/* font-size: 2em; */
+}
+h2 {
+	padding: 1em;
 	text-align: center;
 	/* font-size: 2em; */
 }
