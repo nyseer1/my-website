@@ -1,5 +1,6 @@
 "use client"; // Required for Web Audio API (ensures the code only runs in the browser where the window object and AudioContext are available)
 import dynamic from "next/dynamic";
+import Navbar from "../components/Navbar";
 /*
 lazy loading client component in Next.js faster initial load time by decreasing 
 the amount of JS needed to render a route. 
@@ -12,14 +13,15 @@ const SynthContainer = dynamic(
 	// .then((mod) => mod.functionName) tells it which exported function to get
 	{ ssr: false }, //forces server side rendering off so it dosent try to render in server before rendering in the client
 );
-import "./synth.css";
+// import "./synth.css";
 
 export default function SynthPage() {
 	return (
 		<>
+			<Navbar />
 			<SynthContainer />
 
-			<i>Dynamic XY Web-Synth</i>
+			<h2>Dynamic XY Web-Synth</h2>
 
 			<p>
 				Touch the pad to play notes!
@@ -29,6 +31,7 @@ export default function SynthPage() {
 			</p>
 
 			<p>Developed by Nyseer Couse</p>
+			<br style={{lineHeight:'30'}}/>
 		</>
 	);
 }

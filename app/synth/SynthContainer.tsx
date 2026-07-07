@@ -2,396 +2,412 @@
 import { useEffect, useRef, useState } from "react";
 // import { AudioContext, OfflineAudioContext } from "standardized-audio-context";
 import * as Tone from "tone";
+import '@/app/globals.css';
 Tone.setContext(new Tone.Context({ latencyHint: "interactive" }));
 Tone.getContext().lookAhead = 0; // Removes the 100ms scheduling buffer
-
 export function SynthContainer() {
+	const [showSynth, setShowSynth] = useState(false);
 
-  const [showSynth, setShowSynth] = useState(false);
+	// We store the INDEX (0-3) in state
+	// const [osc1wave, setosc1wave] = useState(0);
 
-  // We store the INDEX (0-3) in state
-  // const [osc1wave, setosc1wave] = useState(0);
+	const A_PENTA = ["C#", "E", "F#", "A", "B"];
+	const OCTAVES = [2, 3, 4, 5];
 
-  const A_PENTA = ["C#", "E", "F#", "A", "B"];
-  const OCTAVES = [2, 3, 4, 5];
+	// Creates: ["A3", "B3", "C#3", "E3", "F#3", "A4", "B4"... "F#5"]
+	const SCALE_NOTES = OCTAVES.flatMap((octave) =>
+		A_PENTA.map((note) => `${note}${octave}`),
+	);
 
-  // Creates: ["A3", "B3", "C#3", "E3", "F#3", "A4", "B4"... "F#5"]
-  const SCALE_NOTES = OCTAVES.flatMap((octave) =>
-    A_PENTA.map((note) => `${note}${octave}`),
-  );
+	//(XY-controller) pad state initialization
+	const [position, setPosition] = useState({ x: 50, y: 50 }); // Center by default (%)
+	const padRef = useRef<HTMLDivElement>(null); //tells typescript this will be a reference to a div later (it wants static typing so it can do type related error catching on compilation)
+	const [cutoff, setCutoff] = useState(0.8);
 
-  //(XY-controller) pad state initialization
-  const [position, setPosition] = useState({ x: 50, y: 50 }); // Center by default (%)
-  const padRef = useRef<HTMLDivElement>(null); //tells typescript this will be a reference to a div later (it wants static typing so it can do type related error catching on compilation)
-  const [cutoff, setCutoff] = useState(0.8);
+	// useref to render a value thats not needed for rendering (rendering mean displaying the visuals) does not re-render itself because the reference is stored in cache so better performance
+	// tell TypeScript it starts as null OR a Tone.Synth to  use useRef for it later (same for others)
+	const synth = useRef<Tone.Synth | null>(null);
+	const filter = useRef<Tone.Filter | null>(null);
+	const filterEnv = useRef<Tone.FrequencyEnvelope | null>(null);
+	const seq = useRef<Tone.Sequence | null>(null);
 
-  // useref to render a value thats not needed for rendering (rendering mean displaying the visuals) does not re-render itself because the reference is stored in cache so better performance
-  // tell TypeScript it starts as null OR a Tone.Synth to  use useRef for it later (same for others)
-  const synth = useRef<Tone.Synth | null>(null);
-  const filter = useRef<Tone.Filter | null>(null);
-  const filterEnv = useRef<Tone.FrequencyEnvelope | null>(null);
-  const seq = useRef<Tone.Sequence | null>(null);
+	const [isRecording, setIsRecording] = useState(false);
+	const [IsPlaying, setIsPlaying] = useState(true); //if transport is currently running
+	const [visual, setVisual] = useState("fluid");
 
-  const [isRecording, setIsRecording] = useState(false);
-  const [IsPlaying, setIsPlaying] = useState(true); //if transport is currently running
-  const [visual, setVisual] = useState('fluid');
+	//MODALS SECTION
+	// const openClearModal = () => modals.openConfirmModal({
+	//   title: 'Are you sure you would like to delete the loop?',
+	//   children: (
+	//     <p >
+	//       This action cannot be undone!
+	//     </p>
+	//   ),
+	//   labels: { confirm: 'Confirm', cancel: 'Cancel' },
+	//   confirmProps: { color: 'red' },
+	//   onCancel: () => console.log('Canceled clear loop'),
+	//   onConfirm: async () => {
+	//     seqData.current.length = 0; //clear all notes instantly.
+	//     synth.current?.triggerRelease(); //silence the currently playing synth\
+	//     console.log('Confirmed clear loop');
+	//   },
+	// });
 
-  //MODALS SECTION
-  // const openClearModal = () => modals.openConfirmModal({
-  //   title: 'Are you sure you would like to delete the loop?',
-  //   children: (
-  //     <p >
-  //       This action cannot be undone!
-  //     </p>
-  //   ),
-  //   labels: { confirm: 'Confirm', cancel: 'Cancel' },
-  //   confirmProps: { color: 'red' },
-  //   onCancel: () => console.log('Canceled clear loop'),
-  //   onConfirm: async () => {
-  //     seqData.current.length = 0; //clear all notes instantly. 
-  //     synth.current?.triggerRelease(); //silence the currently playing synth\
-  //     console.log('Confirmed clear loop');
-  //   },
-  // });
+	//REFS
+	const isButtonHeld = useRef(false); //for playing notes while playing a recording
+	const porta = useRef(0.02);
 
-  //REFS
-  const isButtonHeld = useRef(false); //for playing notes while playing a recording
-  const porta = useRef(0.02);
+	//store sequencer notes in array, (can be a string of the note and cutoff, or null)
+	// defines object parameters, reference the array and fill it with nulls to default. null means no note
+	const seqData = useRef<
+		({ note: string | null; cutoff: number; type: string } | null)[]
+	>(new Array(16).fill(null));
 
-  //store sequencer notes in array, (can be a string of the note and cutoff, or null)
-  // defines object parameters, reference the array and fill it with nulls to default. null means no note
-  const seqData = useRef<
-    ({ note: string | null; cutoff: number; type: string } | null)[]
-  >(new Array(16).fill(null));
+	//synchronize components (this page) with external system (web audio api). tells react render this once on page load and never again. better performance
+	useEffect(() => {
+		//THIS section ONLY runs when component mounts(page first load)-----------------------
+		//create a synth and connect it to the main output (your speakers)
 
-  //synchronize components (this page) with external system (web audio api). tells react render this once on page load and never again. better performance
-  useEffect(() => {
-    //THIS section ONLY runs when component mounts(page first load)-----------------------
-    //create a synth and connect it to the main output (your speakers)
+		filter.current = new Tone.Filter(8000, "lowpass").toDestination();
 
-    filter.current = new Tone.Filter(8000, "lowpass").toDestination();
+		synth.current = new Tone.Synth({
+			oscillator: {
+				type: "sawtooth", // Options: "sine", "square", "triangle", "sawtooth"
+			},
+		}).connect(filter.current);
 
-    synth.current = new Tone.Synth({
-      oscillator: {
-        type: "sawtooth", // Options: "sine", "square", "triangle", "sawtooth"
-      },
-    }).connect(filter.current);
+		//FILTER ENV
+		filterEnv.current = new Tone.FrequencyEnvelope({
+			baseFrequency: 200, //starting freq
+			octaves: 2, // How far to jump
+			attack: 0.01,
+			decay: 0.2,
+			sustain: 0.5,
+			release: 0.5,
+		});
 
-    //FILTER ENV
-    filterEnv.current = new Tone.FrequencyEnvelope({
-      baseFrequency: 200, //starting freq
-      octaves: 2, // How far to jump
-      attack: 0.01,
-      decay: 0.2,
-      sustain: 0.5,
-      release: 0.5,
-    });
+		filterEnv.current.connect(filter.current.frequency);
 
-    filterEnv.current.connect(filter.current.frequency);
+		seq.current = new Tone.Sequence(
+			(time, step: number) => {
+				const data = seqData.current[step];
+				// console.log("step: " + step + ", freq is " + data?.note);
+				if (data) {
+					//UPDATE
+					switch (data.type) {
+						case "D": //pointer down
+							//0.0001 for buffer. trying to restart an attack immediately after a release, Tone.js might throw "Strictly Greater Than" Error
+							if (!isButtonHeld.current) {
+								//buttonheld makes sure recording dosent play ontop of you
+								synth.current?.triggerAttack(`${data.note}`, time + 0.001); //Template literals are preferred over string concatenation. handles type conversion and supports multi line (also better readability).
+								synth.current?.frequency.rampTo(`${data.note}`, porta.current); //2nd arg is porta in seconds
 
-    seq.current = new Tone.Sequence(
-      (time, step: number) => {
-        const data = seqData.current[step];
-        // console.log("step: " + step + ", freq is " + data?.note);
-        if (data) {
-          //UPDATE
-          switch (data.type) {
-            case "D": //pointer down
-              //0.0001 for buffer. trying to restart an attack immediately after a release, Tone.js might throw "Strictly Greater Than" Error
-              if (!isButtonHeld.current) { //buttonheld makes sure recording dosent play ontop of you
-                synth.current?.triggerAttack(`${data.note}`, time + 0.001); //Template literals are preferred over string concatenation. handles type conversion and supports multi line (also better readability).
-                synth.current?.frequency.rampTo(`${data.note}`, porta.current); //2nd arg is porta in seconds
+								if (filterEnv.current) {
+									filterEnv.current.triggerAttack(time);
 
-                if (filterEnv.current) {
-                  filterEnv.current.triggerAttack(time);
+									console.log("freq is " + data.note);
+									filterEnv.current.baseFrequency = data.cutoff;
+								}
+							}
 
-                  console.log("freq is " + data.note);
-                  filterEnv.current.baseFrequency = data.cutoff;
-                }
-              }
+							break;
 
-              break;
+						case "U": //pointer up
+							if (!isButtonHeld.current) {
+								synth.current?.triggerRelease(time + 0.05); //release synth, arg is how many seconds
+								if (filterEnv.current) {
+									filterEnv.current.triggerRelease();
+								}
+							}
+							break;
 
-            case "U": //pointer up
-              if (!isButtonHeld.current) {
-                synth.current?.triggerRelease(time + 0.05); //release synth, arg is how many seconds
-                if (filterEnv.current) {
-                  filterEnv.current.triggerRelease();
-                }
-              }
-              break;
+						case "M": //pointer moved
+							if (!isButtonHeld.current) {
+								if (synth.current) {
+									//buttonheld makes sure recording dosent play ontop of you
+									synth.current?.frequency.rampTo(
+										`${data.note}`,
+										porta.current,
+									); //2nd arg is porta in seconds
+									if (!seqData.current[step - 1]?.note) {
+										//if previous step's note is null, trigger attack again. without this notes will just be silent after a note off
+										synth.current.triggerAttack(`${data.note}`, time + 0.001);
+									}
 
-            case "M": //pointer moved
-              if (!isButtonHeld.current) {
-                if (synth.current) {
-                  //buttonheld makes sure recording dosent play ontop of you
-                  synth.current?.frequency.rampTo(`${data.note}`, porta.current); //2nd arg is porta in seconds
-                  if (!seqData.current[step - 1]?.note) { //if previous step's note is null, trigger attack again. without this notes will just be silent after a note off
-                    synth.current.triggerAttack(`${data.note}`, time + 0.001);
-                  }
+									// console.log("freq is " + data.note);
+									if (filterEnv.current) {
+										filterEnv.current.baseFrequency = data.cutoff;
+									}
+								}
+							}
 
-                  // console.log("freq is " + data.note);
-                  if (filterEnv.current) {
-                    filterEnv.current.baseFrequency = data.cutoff;
-                  }
-                }
-              }
+							break;
+					}
+				} //step indexes
 
-              break;
-          }
-        } //step indexes
+				// time visuals to the sequence here (this code runs every step by default)
+				Tone.getDraw().schedule(() => {
+					// console.log("visuals should be happening now");
+				}, time);
+			},
+			//the array is what step variable reads one by one. so step will have value of 0-15 to play note at step 0-15
+			[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+			"16n",
+		).start(0); //start seq 0
 
-        // time visuals to the sequence here (this code runs every step by default)
-        Tone.getDraw().schedule(() => {
-          // console.log("visuals should be happening now");
-        }, time);
-      },
-      //the array is what step variable reads one by one. so step will have value of 0-15 to play note at step 0-15
-      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-      "16n",
-    ).start(0); //start seq 0
+		//config the transport (like a player)
+		Tone.getTransport().loop = true;
+		Tone.getTransport().loopEnd = "1m"; //1m = 1 measure
+		Tone.getTransport().bpm.value = 130;
 
-    //config the transport (like a player)
-    Tone.getTransport().loop = true;
-    Tone.getTransport().loopEnd = "1m"; //1m = 1 measure
-    Tone.getTransport().bpm.value = 130;
+		return () => {
+			//-----THIS section ONLY runs when the component is destroyed----------------------
 
-    return () => {
-      //-----THIS section ONLY runs when the component is destroyed----------------------
+			//destroys all synth components to prevent memory leaks
+			synth.current?.dispose();
+			seq.current?.dispose(); //MAKE SURE TO ADD TO REMOVE THE OLD SEQUENCES
+			filter.current?.dispose();
+			filterEnv.current?.dispose();
+			Tone.getTransport().stop(); //TODO might not need check later
+			// cursorEffect.destroy();
+		};
+	}, []);
 
-      //destroys all synth components to prevent memory leaks
-      synth.current?.dispose();
-      seq.current?.dispose(); //MAKE SURE TO ADD TO REMOVE THE OLD SEQUENCES
-      filter.current?.dispose();
-      filterEnv.current?.dispose();
-      Tone.getTransport().stop(); //TODO might not need check later
-      // cursorEffect.destroy();
-    };
-  }, []);
+	//* EVENT HANDLERS----------------------- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  //* EVENT HANDLERS----------------------- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	//TODO set the waveforms one by one with a string and switch cases, ALSO OTHER PARAMETERS
 
-  //TODO set the waveforms one by one with a string and switch cases, ALSO OTHER PARAMETERS
+	async function handleStartAudio() {
+		//async function means run this function asynchronously so other code can be executed during loading
 
-  async function handleStartAudio() {
-    //async function means run this function asynchronously so other code can be executed during loading
+		try {
+			// wait for audio context to start before playing audio
+			await Tone.start(); //await says wait here until this calculation is done
+			Tone.getTransport().start(); //start transport(player)
+		} catch (error) {
+			// only runs in the browser where the window object and AudioContext are available
+			console.error("web audio api not supported !!! :(", error);
+		} finally {
+			console.warn("audio is ready");
+			setShowSynth(true);
+		}
+	}
 
-    try {
-      // wait for audio context to start before playing audio
-      await Tone.start(); //await says wait here until this calculation is done
-      Tone.getTransport().start(); //start transport(player)
-    } catch (error) {
-      // only runs in the browser where the window object and AudioContext are available
-      console.error("web audio api not supported !!! :(", error);
-    } finally {
-      console.warn("audio is ready");
-      setShowSynth(true);
-    }
-  }
+	const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+		//tells typescript its a pointer event so it knows the type to catch errors for
+		if (e.buttons !== 1) return; //confirm that user is either left clicking or touching (necessary on pointerMove events to prevent overlapping on pointerDown events)
+		if (!padRef.current) return; //end here if we do not have a reference to the pad
+		//NOTHING CAN GO BEFORE THOSE RETURN STATEMENTS OR ELSE BIG ERROR
 
-  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => { //tells typescript its a pointer event so it knows the type to catch errors for
-    if (e.buttons !== 1) return; //confirm that user is either left clicking or touching (necessary on pointerMove events to prevent overlapping on pointerDown events)
-    if (!padRef.current) return; //end here if we do not have a reference to the pad
-    //NOTHING CAN GO BEFORE THOSE RETURN STATEMENTS OR ELSE BIG ERROR
+		isButtonHeld.current = true;
+		console.log("true");
 
-    isButtonHeld.current = true;
-    console.log('true');
+		const rect = padRef.current.getBoundingClientRect(); //get the bounds of the pad
 
-    const rect = padRef.current.getBoundingClientRect(); //get the bounds of the pad
+		//initialize to 0, calculate x and y position on pad based on input
+		const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+		const yRaw = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
+		const y = 1 - yRaw; //invert the y so that higher on the pad is higher pitch, vice versa
 
-    //initialize to 0, calculate x and y position on pad based on input
-    const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    const yRaw = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
-    const y = 1 - yRaw; //invert the y so that higher on the pad is higher pitch, vice versa
+		// logarithmic frequency mapping to pad: 0.0 - 20Hz and 1.0 - 20,000Hz (rate of hz growth is faster when going to the right of the pad, vice versa)
+		// map the x pad val to a freq, then round it to one of the scale notes (use SCALE_NOTES.length - 1 to stay within array bounds)
+		const index = Math.floor(x * (SCALE_NOTES.length - 1));
+		const freq = Tone.Frequency(SCALE_NOTES[index]).toFrequency();
 
-    // logarithmic frequency mapping to pad: 0.0 - 20Hz and 1.0 - 20,000Hz (rate of hz growth is faster when going to the right of the pad, vice versa)
-    // map the x pad val to a freq, then round it to one of the scale notes (use SCALE_NOTES.length - 1 to stay within array bounds)
-    const index = Math.floor(x * (SCALE_NOTES.length - 1));
-    const freq = Tone.Frequency(SCALE_NOTES[index]).toFrequency();
+		// console.log("freq is " + SCALE_NOTES[index]);
+		synth.current?.frequency.rampTo(freq, porta.current); //2nd arg how fast in seconds
 
-    // console.log("freq is " + SCALE_NOTES[index]);
-    synth.current?.frequency.rampTo(freq, porta.current); //2nd arg how fast in seconds
+		//update filter
+		const cutoff = 20 * (11000 / 40) ** y; // log: min * (max/min)^exponent
+		if (!filterEnv.current) return; //dont need to add ? because i already check if it exists
+		filterEnv.current.baseFrequency = cutoff; //set filter cutoff
 
-    //update filter
-    const cutoff = 20 * (11000 / 40) ** y; // log: min * (max/min)^exponent
-    if (!filterEnv.current) return; //dont need to add ? because i already check if it exists
-    filterEnv.current.baseFrequency = cutoff; //set filter cutoff
+		//update position (might not be necessary)
+		setPosition({ x, y });
 
-    //update position (might not be necessary)
-    setPosition({ x, y });
+		//*RECORDING MODE - (if not recording stop here) ---------
+		if (!isRecording) return;
 
-    //*RECORDING MODE - (if not recording stop here) ---------
-    if (!isRecording) return;
+		//get note, quantize it to the nearest time, change value at array[time]
+		const transport = Tone.getTransport();
+		const step = Math.floor(transport.progress * 16); //round to nearest step (there are 16 steps )
+		seqData.current[step] = {
+			note: "" + freq,
+			cutoff: cutoff,
+			type: "M",
+		};
+	};
 
-    //get note, quantize it to the nearest time, change value at array[time] 
-    const transport = Tone.getTransport();
-    const step = Math.floor(transport.progress * 16); //round to nearest step (there are 16 steps )
-    seqData.current[step] = {
-      note: "" + freq,
-      cutoff: cutoff,
-      type: "M",
-    };
-  };
+	const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+		//just tells typescript its a pointer event so it knows the type to catch errors for
+		isButtonHeld.current = true;
+		console.log("true");
 
-  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => { //just tells typescript its a pointer event so it knows the type to catch errors for
-    isButtonHeld.current = true;
-    console.log('true');
+		if (!padRef.current) return; //end here if we do not have a reference to the pad
+		const rect = padRef.current.getBoundingClientRect(); //get the bounds of the pad
 
-    if (!padRef.current) return; //end here if we do not have a reference to the pad
-    const rect = padRef.current.getBoundingClientRect(); //get the bounds of the pad
+		//initialize to 0, calculate x and y position on pad based on input
+		const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+		const yRaw = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
+		const y = 1 - yRaw; //invert the y so that higher on the pad is higher pitch, vice versa
 
-    //initialize to 0, calculate x and y position on pad based on input
-    const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    const yRaw = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
-    const y = 1 - yRaw; //invert the y so that higher on the pad is higher pitch, vice versa
+		// logarithmic frequency mapping to pad: 0.0 - 20Hz and 1.0 - 20,000Hz (rate of hz growth is faster when going to the right of the pad, vice versa)
+		// round freq to the closest scale note (SCALE_NOTES.length - 1 to stay within array bounds)
+		const index = Math.floor(x * (SCALE_NOTES.length - 1));
+		const freq = Tone.Frequency(SCALE_NOTES[index]).toFrequency();
 
-    // logarithmic frequency mapping to pad: 0.0 - 20Hz and 1.0 - 20,000Hz (rate of hz growth is faster when going to the right of the pad, vice versa)
-    // round freq to the closest scale note (SCALE_NOTES.length - 1 to stay within array bounds)
-    const index = Math.floor(x * (SCALE_NOTES.length - 1));
-    const freq = Tone.Frequency(SCALE_NOTES[index]).toFrequency();
+		//filter
+		const cutoff = 20 * (11000 / 40) ** y; // Formula: min * (max/min)^exponent
+		const filterattack = 0.01;
+		const filterrelease = 0.4;
+		if (!filter.current) return; //dont need to add ? because i already check if it exists
+		filter.current.frequency.value = cutoff;
+		if (!filterEnv.current) return; //dont need to add ? because i already check if it exists
+		filterEnv.current.baseFrequency = cutoff; //set filter cutoff
 
-    //filter
-    const cutoff = 20 * (11000 / 40) ** y; // Formula: min * (max/min)^exponent
-    const filterattack = 0.01;
-    const filterrelease = 0.4;
-    if (!filter.current) return; //dont need to add ? because i already check if it exists
-    filter.current.frequency.value = cutoff;
-    if (!filterEnv.current) return; //dont need to add ? because i already check if it exists
-    filterEnv.current.baseFrequency = cutoff; //set filter cutoff
+		//start envelopes simultaneously
+		console.log("note is " + SCALE_NOTES[index]);
+		synth.current?.triggerAttack(freq);
+		filterEnv.current.triggerAttack();
 
-    //start envelopes simultaneously
-    console.log("note is " + SCALE_NOTES[index]);
-    synth.current?.triggerAttack(freq);
-    filterEnv.current.triggerAttack();
+		//update position (might not be necessary)
+		setPosition({ x, y });
 
-    //update position (might not be necessary)
-    setPosition({ x, y });
+		//*RECORDING MODE - (if not recording stop here) ---------
+		if (!isRecording) return;
+		//get note, quantize it to the nearest time, change value at array[time]
+		const step = Math.floor(Tone.getTransport().progress * 16); //round to nearest step (there are 16 steps )
+		seqData.current[step] = {
+			note: "" + freq,
+			cutoff: cutoff,
+			type: "D",
+		};
+	};
 
-    //*RECORDING MODE - (if not recording stop here) ---------
-    if (!isRecording) return;
-    //get note, quantize it to the nearest time, change value at array[time]
-    const step = Math.floor(Tone.getTransport().progress * 16); //round to nearest step (there are 16 steps )
-    seqData.current[step] = {
-      note: "" + freq,
-      cutoff: cutoff,
-      type: "D",
-    };
-  };
+	const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+		//tells typescript its a pointer event so it knows the type to catch errors for
+		isButtonHeld.current = false;
+		console.log("false");
 
-  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => { //tells typescript its a pointer event so it knows the type to catch errors for
-    isButtonHeld.current = false;
-    console.log('false');
+		//set release
+		const release = 0.1;
+		synth.current?.triggerRelease(Tone.now() + release); //release synth
+		filterEnv.current?.triggerRelease();
 
-    //set release
-    const release = 0.1;
-    synth.current?.triggerRelease(Tone.now() + release); //release synth
-    filterEnv.current?.triggerRelease();
+		//*RECORDING MODE - (if not recording stop here) ---------
+		if (!isRecording) return;
 
-    //*RECORDING MODE - (if not recording stop here) ---------
-    if (!isRecording) return;
+		const step = Math.floor(Tone.getTransport().progress * 16); //round to nearest step (there are 16 steps )
+		//record release
+		seqData.current[step] = {
+			note: null,
+			cutoff: cutoff,
+			type: "U",
+		};
+	};
+	// -------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    const step = Math.floor(Tone.getTransport().progress * 16); //round to nearest step (there are 16 steps )
-    //record release
-    seqData.current[step] = {
-      note: null,
-      cutoff: cutoff,
-      type: "U",
-    };
-  };
-  // -------------------------------------------------------------------------------------------------------------------------------------------------------
+	return (
+		<>
+    <p></p>
+			<br style={{ lineHeight: 5 }} />
+			{/* if this true ? (render this) : else render this */}
+			{showSynth ? (
+				<>
+					{/* sequencer buttons */}
+					<button
+						type="button"
+						onPointerDown={async () => {
+							synth.current?.triggerRelease();
+							Tone.getTransport().stop();
+							Tone.getTransport().start();
+						}}
+					>
+						Stop
+					</button>
 
-  return (
-    <>
-      {/* if this true ? (render this) : else render this */}
-      {showSynth ? (
-        <>
-          {/* sequencer buttons */}
-          <button type="button"
-            onPointerDown={async () => {
-              synth.current?.triggerRelease();
-              Tone.getTransport().stop();
-              Tone.getTransport().start();
-            }}>
-            Stop
-          </button>
+					{IsPlaying ? (
+						<button
+							type="button"
+							onPointerDown={async () => {
+								setIsPlaying(false);
+								Tone.getTransport().pause(); //pause the thing scheduling the notes
+								//turn off current sounds
+								synth.current?.triggerRelease();
+							}}
+						>
+							Pause
+						</button>
+					) : (
+						<button
+							type="button"
+							onPointerDown={async () => {
+								setIsPlaying(true);
+								Tone.getTransport().start();
+							}}
+						>
+							Play
+						</button>
+					)}
 
-          {IsPlaying ? (
-            <button type="button"
-              onPointerDown={async () => {
-                setIsPlaying(false);
-                Tone.getTransport().pause(); //pause the thing scheduling the notes
-                //turn off current sounds
-                synth.current?.triggerRelease();
-              }}
-            >
-              Pause
-            </button>
-          ) : (
-            <button type="button"
-              onPointerDown={async () => {
-                setIsPlaying(true);
-                Tone.getTransport().start();
-              }}
-            >
-              Play
-            </button>
-          )}
+					{isRecording ? (
+						<button
+							type="button"
+							onPointerDown={async (e) => {
+								setIsRecording(false); //turn recording mode off
+							}}
+						>
+							REC
+						</button>
+					) : (
+						<button
+							type="button"
+							onPointerDown={async (e) => {
+								setIsRecording(true); //turn recording mode on
+							}}
+						>
+							REC
+						</button>
+					)}
+					{/* open modal here */}
+					<button type="button" onClick={console.log}>
+						Clear Loop
+					</button>
 
-          {isRecording ? (
-            <button type="button"
-              onPointerDown={async (e) => {
-                setIsRecording(false); //turn recording mode off
-              }}
-            >
-              REC
-            </button>
-          ) : (
-            <button type="button" 
-              onPointerDown={async (e) => {
-                setIsRecording(true); //turn recording mode on
-              }}
-            >
-              REC 
-            </button>
-          )}
-          {/* open modal here */}
-          <button type="button"
-            onClick={console.log}>Clear Loop</button> 
-
-
-          {/* render xy pad here */}
-          <div className="piano-board">
-                          {visual === 'fuid' ? ( 
-                                          <span>cursor goes here</span>
-                          ): (                             
-                            <span>cursor goes here</span>
-                            )}
-            <div
-              id="targetDiv"
-              ref={padRef}
-              onPointerDown={handlePointerDown} //automatically calls the function on pointer down (when someone touches the pad) same for others
-              onPointerUp={handlePointerUp}
-              onPointerMove={handlePointerMove}
-              className="w-full h-[50vh] bg-slate-800 rounded-xl touch-none "
-            >
-              {/* visual metronome indicator could go here */}
-              <p className="absolute top-3 right-3 text-sm text-slate-500">
-                Pitch-Filter X-Y
-              </p>
-            </div>
-          </div>
-
-        </>
-      ) : (
-        //button to activate synth here
-        <button type="button"
-          onPointerDown={async (e) => {
-            handleStartAudio(); //handles asynchronous api call to web audio api
-          }}
-        >
-          Start Synth
-        </button>
-      )}
-    </>
-  );
+					{/* render xy pad here */}
+					<div className="piano-board">
+						{visual === "fuid" ? (
+							<span>cursor goes here</span>
+						) : (
+							<span>cursor goes here</span>
+						)}
+						<div
+							id="targetDiv"
+							ref={padRef}
+							onPointerDown={handlePointerDown} //automatically calls the function on pointer down (when someone touches the pad) same for others
+							onPointerUp={handlePointerUp}
+							onPointerMove={handlePointerMove}
+							className="w-full h-[50vh] bg-slate-800 rounded-xl touch-none "
+						>
+							{/* visual metronome indicator could go here */}
+							<p className="absolute top-3 right-3 text-sm text-slate-500">
+								Pitch-Filter X-Y
+							</p>
+						</div>
+					</div>
+				</>
+			) : (
+				//button to activate synth here
+				<button
+					type="button"
+					onPointerDown={async (e) => {
+						handleStartAudio(); //handles asynchronous api call to web audio api
+					}}
+					// style={{position:'relative'}}
+				>
+					Start Synth
+				</button>
+			)}
+		</>
+	);
 }

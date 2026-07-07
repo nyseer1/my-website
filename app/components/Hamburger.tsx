@@ -66,7 +66,7 @@ export default function Hamburger() {
 							</Link>
 						</li>
 						<li className="hamburgerItems">
-							{/* todo this isnt doing both */}
+							{/* todo test if this works on other pages */}
 							<Link href="/#projects" className="link">
 								Projects
 							</Link>
