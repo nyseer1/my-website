@@ -22,8 +22,8 @@ export default function HomePage() {
 				) : (
 					<br style={{ lineHeight: 6 }} />
 				)}
-				<h3>Hi, Im Nyseer Couse, Welcome to my Website!</h3>
-				<br style={{ lineHeight: 10 }} />
+				<h2>Hi, Im Nyseer Couse, Welcome to my Website!</h2>
+				<br style={{ lineHeight: 5 }} />
 			</div>
 			<div id="projects">
 				<h1>Featured Web Applications:</h1>
@@ -38,12 +38,12 @@ export default function HomePage() {
 					interfaces, RESTful applications, and deploying production-ready
 					projects.
 				</p>
-				<h2>Skills:</h2>
+				<h3>Skills:</h3>
 				<p id="">
-					<b>Soft Skills:</b> Problem-Solving, Teamworking, Organization,
-					Communication, Time Management, Critical Thinking<br/>
+					Full-Stack Web Development, Responsive UI, <br/>
 					<b>Languages:</b> JavaScript (ES6+), TypeScript, Java, Python, SQL, HTML5, CSS3, C++<br/>
-					<b>Frontend:</b> React.js, Next.js, Responsive Web Design, HTML5, CSS3, State Management, Web APIs
+					<b>Frontend:</b> React.js, Next.js, Responsive Web Design, HTML5, CSS3, State Management, Web APIs<br/>
+					<b>Backend:</b> Node.js, Express.js, REST APIs, Axios.js
 				</p>
 				<br style={{ lineHeight: 1 }} />
 			</div>

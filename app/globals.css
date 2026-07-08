@@ -73,7 +73,7 @@ ul li a:hover {
 
 /* basically the theme */
 html {
-	background-color: #000010;
+	background-color: #000;
 	scroll-behavior: smooth;
 	color: #eee;
 	overflow-wrap: break-word;
@@ -109,18 +109,22 @@ html {
 /* header and body */
 h1 {
 	padding: 2em;
-	text-align: center;
-	/* font-size: 2em; */
+	/* text-align: center; */
+	font-size: 2em;
 }
 h2 {
-	padding: 1em;
 	text-align: center;
-	/* font-size: 2em; */
+	font-size: 1.5em;
+	padding-left: 2.5em;
+	padding-right: 2.5em;
+	padding-top: 3em;
+
 }
 h3 {
-	padding: 1em;
-	text-align: center;
-	/* font-size: 2em; */
+	padding-left: 5%;
+	padding-right: 5%;
+	font-size: 1.5em;
+	/* text-align: center; */
 }
 p {
 	padding-left: 10%;
