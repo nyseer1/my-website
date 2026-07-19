@@ -14,6 +14,7 @@ export default function Navbar() {
 	// 	}
 	// 	prevScrollpos = currentScrollPos;
 	// };
+	//https://nextjs.org/docs/app/api-reference/components/link
 
 	return (
 		<ul id="navbar" className="adaptive">

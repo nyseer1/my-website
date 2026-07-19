@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 export default function HomePage() {
-	const [isDesktop, setDesktop] = useState(null);
+	const [isDesktop, setDesktop] = useState<boolean>(false);
 
 	const updateMedia = () => {
 		setDesktop(window.innerWidth > 600);

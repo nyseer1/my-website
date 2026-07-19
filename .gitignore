@@ -45,3 +45,6 @@ next-env.d.ts
 turbopack-*
 node_modules_*
 *.map
+
+#vs code configs
+.vscode
